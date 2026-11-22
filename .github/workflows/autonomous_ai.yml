@@ -1,0 +1,24 @@
+name: Autonomous Cloud AI Agents
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  evolve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run Cloud AI Agents
+        run: python3 cloud_agents.py
+      - name: Save Evolution to GitHub
+        run: |
+          git config user.name "Cloud-AI-Agent"
+          git config user.email "agent@github.com"
+          git add .
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Cloud AI Evolution Step" && git push)
+          
