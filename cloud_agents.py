@@ -45,7 +45,7 @@ except Exception:
     pass
 
 # 3. Записываем реальные разведданные в облачную память
-if abstract or repo_info:
+if True:
     entry = f"[Сервер arXiv+GitHub: {topic}] {abstract}{repo_info}\n"
     open(MEM, "a", encoding="utf-8").write(entry)
 
