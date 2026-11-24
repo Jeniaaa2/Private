@@ -498,3 +498,6 @@ Spike times (ms): []
 [Сервер arXiv+GitHub: Distributed Consensus] 
 [Сервер-Модуль] Тема: Distributed Consensus | Энтропия весов: 2.3792 | Сигнатура: fa4ca8dd53a0
 [Gen #1 | 2026-11-24 21:55 UTC] КНУТ -15 XP -> 85 XP (⛓️ ШТРАФБАТ) | Провал за 2 попытки: Код не найден в ответе | Тема: Алгоритм Дейкстры с эвристикой | [Wiki RU] Алгоритм Дейкстры: Dijkstra’s algorithm) — алгоритм на графах, изобретённый нидерландским учёным Эдсгером Дейкстрой в 1959 году. Находит кратчайшие пути от одной из вершин графа до всех остальных || [Wiki EN] Monte Carlo tree search: In computer science, Monte Carlo tree search (MCTS) is a heuristic tree search algorithm for some kinds of decision 
+[Сервер arXiv+GitHub: Distributed Consensus] 
+[Сервер-Модуль] Тема: Distributed Consensus | Энтропия весов: 2.5619 | Сигнатура: fa4ca8dd53a0
+[Gen #2 | 2026-11-24 22:55 UTC] КНУТ -15 XP -> 70 XP (⛓️ ШТРАФБАТ) | Провал за 2 попытки: Код не найден в ответе | Тема: Обучение с подкреплением | [Wiki RU] Обучение с подкреплением: reinforcement learning) — один из способов машинного обучения, в ходе которого испытуемая система (агент) обучается, взаимодействуя с некоторой средой. С точки зрения кибернетики, является одним из видов кибернетического эксперимента || [Wiki EN] Monte Carlo tree search: In computer science, Monte Carlo tree search (MCTS) 
