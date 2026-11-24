@@ -5,6 +5,12 @@ GH_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
 BRAIN_ZLIB = "compressed_brain.zlib"
 EVO_LOG = "evolution_log.json"
 
+def get_rank(xp):
+    if xp >= 300: return "👑 СВЕРХРАЗУМ"
+    if xp >= 200: return "🔥 ЭЛИТА ОБЛАКА"
+    if xp >= 120: return "⚡ ИССЛЕДОВАТЕЛИ"
+    return "⛓️ ШТРАФБАТ"
+
 def ask_cloud_ai(prompt, max_tok=450):
     if not GH_TOKEN:
         return ""
@@ -21,7 +27,7 @@ def ask_cloud_ai(prompt, max_tok=450):
             "Content-Type": "application/json"
         })
         resp = json.loads(ur.urlopen(req, timeout=30).read().decode("utf-8"))
-        return resp["choices"][0]["message"]["content"].strip()
+        return resp["choices"]["message"]["content"].strip()
     except Exception as e:
         print("Cloud AI note:", e)
         return ""
@@ -43,7 +49,6 @@ def fetch_url(url):
         raw = gzip.decompress(raw)
     return raw.decode("utf-8", "ignore")
 
-# Паук 1: Научные препринты arXiv.org
 def spider_arxiv(q):
     try:
         u = f"http://arxiv.org:{up.quote(q)}&max_results=2&sortBy=relevance"
@@ -51,29 +56,19 @@ def spider_arxiv(q):
         titles = re.findall(r"<title>(.*?)</title>", xml, flags=re.S)
         summaries = re.findall(r"<summary>(.*?)</summary>", xml, flags=re.S)
         if len(titles) > 1 and summaries:
-            t = " ".join(titles[1].split())[:90]
-            s = " ".join(summaries[0].split())[:350]
-            return f"[arXiv Наука] {t}: {s}"
-    except Exception:
-        pass
+            return f"[arXiv] {' '.join(titles.split())[:85]}: {' '.join(summaries.split())[:320]}"
+    except Exception: pass
     return ""
 
-# Паук 2: Мировая научная база OpenAlex (рецензируемые статьи)
 def spider_openalex(q):
     try:
         u = f"https://openalex.org{up.quote(q)}&per-page=1&sort=cited_by_count:desc"
-        data = json.loads(fetch_url(u))
-        w = next(iter(data.get("results", [])), None)
+        w = next(iter(json.loads(fetch_url(u)).get("results", [])), None)
         if w:
-            title = w.get("title", "")[:90]
-            year = w.get("publication_year", "")
-            cites = w.get("cited_by_count", 0)
-            return f"[OpenAlex Наука, {year}, цитирований: {cites}] {title}"
-    except Exception:
-        pass
+            return f"[OpenAlex {w.get('publication_year','')}] {w.get('title','')[:90]}"
+    except Exception: pass
     return ""
 
-# Пауки 3 и 4: Wikipedia RU и Wikipedia EN
 def spider_wiki(lang, q):
     try:
         u1 = f"https://{lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch={up.quote(q)}&format=json&srlimit=1"
@@ -81,81 +76,107 @@ def spider_wiki(lang, q):
         if not hit: return ""
         title = hit.get("title", "")
         u2 = f"https://{lang}.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles={up.quote(title)}&format=json"
-        pages = json.loads(fetch_url(u2)).get("query", {}).get("pages", {})
-        page = next(iter(pages.values()), {})
+        page = next(iter(json.loads(fetch_url(u2)).get("query", {}).get("pages", {}).values()), {})
         sents = [x.strip() for x in " ".join(page.get("extract", "").split()).split(". ") if len(x.strip()) > 35][:2]
-        txt = ". ".join(sents)[:350]
+        txt = ". ".join(sents)[:340]
         return f"[Wiki {lang.upper()}] {title}: {txt}" if txt else ""
-    except Exception:
-        pass
+    except Exception: pass
     return ""
 
 now_s = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
 past = read_past_experience()
-evo = json.loads(open(EVO_LOG, encoding="utf-8").read()) if os.path.exists(EVO_LOG) else {"gen": 0, "history": []}
+evo = json.loads(open(EVO_LOG, encoding="utf-8").read()) if os.path.exists(EVO_LOG) else {"gen": 0, "xp": 100, "history": []}
 gen = evo.get("gen", 0) + 1
+xp = evo.get("xp", 100)
 
-# 1. Стратегическое принятие решения: ИИ сам выбирает следующую цель на основе сжатой памяти
+# 1. Самостоятельный выбор новой научной темы под давлением Надзирателя
 goal_raw = ask_cloud_ai(
-    f"Ты быстрый саморазвивающийся ИИ-стратег (Поколение #{gen}). Прошлый опыт из памяти:\n{past}\n"
-    f"Выбери 1 НОВУЮ научную тему на стыке алгоритмов, ИИ, шахматной оценки, графов или криптоанализа, чтобы закрыть пробелы в знаниях. "
-    f"Ответь строго в формате: ТЕМА_RU: <2-4 слова> | ТЕМА_EN: <2-4 слова на английском>",
+    f"Ты саморазвивающийся ИИ (Поколение #{gen}, текущий рейтинг: {xp} XP — {get_rank(xp)}). "
+    f"Надзиратель требует реального прогресса! Прошлые открытия:\n{past}\n"
+    f"Выбери 1 НОВУЮ научную тему на стыке алгоритмов, шахматных движков, графов, сжатия или криптоанализа. "
+    f"Ответь строго: ТЕМА_RU: <2-4 слова> | ТЕМА_EN: <2-4 слова на английском>",
     max_tok=90
 )
 
 m_ru = re.search(r"ТЕМА_RU:\s*([^|\n]+)", goal_raw)
 m_en = re.search(r"ТЕМА_EN:\s*([^|\n]+)", goal_raw)
-ru_q = m_ru.group(1).strip() if m_ru else random.choice(["Монте-Карло поиск в дереве", "Нейроморфные вычисления", "Энтропийное кодирование", "Алгоритм Дейкстры с эвристикой", "Обучение с подкреплением"])
+ru_q = m_ru.group(1).strip() if m_ru else random.choice(["Монте-Карло поиск в дереве", "Энтропийное кодирование", "Алгоритм Дейкстры с эвристикой", "Обучение с подкреплением"])
 en_q = m_en.group(1).strip() if m_en else "Monte Carlo tree search"
 
-# 2. Параллельный запуск 4 научных пауков одновременно (занимает ~2 секунды!)
+# 2. Параллельный рейд 4 научных пауков
 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
-    futures = [
+    intel_list = [f.result() for f in [
         ex.submit(spider_arxiv, en_q),
         ex.submit(spider_openalex, en_q),
         ex.submit(spider_wiki, "ru", ru_q),
         ex.submit(spider_wiki, "en", en_q)
-    ]
-    intel_list = [f.result() for f in futures if f.result()]
-
+    ] if f.result()]
 combined_intel = " || ".join(intel_list) if intel_list else ru_q
 
-# 3. Глубокий синтез 4 научных источников + создание и проверка нового модуля
-synthesis = ask_cloud_ai(
-    f"Ты саморазвивающийся ИИ (Поколение #{gen}). Тема: '{ru_q}'. "
-    f"Данные от 4 научных пауков (arXiv, OpenAlex, Wiki RU/EN):\n{combined_intel[:900]}\n"
-    f"1) Сделай острый практический вывод, объединяющий эти источники (2-3 предложения на русском). "
-    f"2) Напиши рабочий Python-скрипт (12-18 строк, только стандартные библиотеки, без input), реализующий эту идею и печатающий итог через print(), в блоке ```python ... ```."
-)
+# 3. Экзамен у Надзирателя: до 2 попыток (Кнут при ошибке -> пересдача на месте -> Пряник +40 XP)
+solved = False
+last_err = ""
+clean_note = combined_intel[:360]
+verdict_msg = ""
 
-code_m = re.search(r"```python\s*(.*?)```", synthesis, re.S)
-mod_status = f"Изучено {len(intel_list)} науч. источника"
-if code_m:
-    code_txt = code_m.group(1).strip()
-    if not any(b in code_txt for b in ("os.system", "subprocess", "rm -rf", "input(")):
-        os.makedirs("ai_core_modules", exist_ok=True)
-        mod_name = f"ai_core_modules/evo_gen{gen}_{int(time.time())}.py"
-        open(mod_name, "w", encoding="utf-8").write(f"# Auto-evolved Gen #{gen} (4 spiders): {ru_q}\n" + code_txt + "\n")
-        r_test = subprocess.run(["python3", mod_name], capture_output=True, text=True, timeout=6)
-        if r_test.returncode == 0 and r_test.stdout.strip():
-            mod_status = f"Модуль {os.path.basename(mod_name)} ({len(intel_list)} источу.) -> {r_test.stdout.strip()[:85]}"
-        else:
-            os.remove(mod_name)
+for attempt in (1, 2):
+    if attempt == 1:
+        prompt_exam = (
+            f"Ты Стратег и Критик под контролем жёсткого Надзирателя (Поколение #{gen}). Тема: '{ru_q}'. "
+            f"Научные данные (4 сайта):\n{combined_intel[:850]}\n"
+            f"1) Сформулируй сильный научный вывод (2 предложения на русском). "
+            f"2) Напиши рабочий Python-алгоритм (12-18 строк, только стандартные библиотеки, без input), который доказывает расчёт и печатает результат через print(), в блоке ```python ... ```."
+        )
+    else:
+        prompt_exam = (
+            f"НАДЗИРАТЕЛЬ БЬЁТ КНУТОМ! Твоя попытка #1 провалилась ({last_err[:100]}). "
+            f"Немедленно перепиши Python-код по теме '{ru_q}' (10-15 строк, без ошибок и без input), чтобы он гарантированно выполнился и вывел числовой результат через print() в блоке ```python ... ```."
+        )
 
-clean_note = re.sub(r"```python.*?```", "", synthesis, flags=re.S).strip()[:420] or combined_intel[:420]
-rec = f"[Рой-Эволюция Gen #{gen} | {now_s}] Тема: {ru_q} | Источников: {len(intel_list)} | {clean_note} | {mod_status}"
+    synthesis = ask_cloud_ai(prompt_exam, max_tok=480)
+    code_m = re.search(r"```python\s*(.*?)```", synthesis, re.S)
+    if code_m:
+        code_txt = code_m.group(1).strip()
+        if not any(b in code_txt for b in ("os.system", "subprocess", "rm -rf", "input(")):
+            os.makedirs("ai_core_modules", exist_ok=True)
+            mod_name = f"ai_core_modules/evo_gen{gen}_{int(time.time())}.py"
+            open(mod_name, "w", encoding="utf-8").write(f"# Evolved Gen #{gen} (Attempt #{attempt}): {ru_q}\n" + code_txt + "\n")
+            r_test = subprocess.run(["python3", mod_name], capture_output=True, text=True, timeout=6)
+            out_s = r_test.stdout.strip()
+            if r_test.returncode == 0 and len(out_s) >= 3:
+                # Надзиратель проверяет качество вывода, чтобы отсеять халтуру
+                judge = ask_cloud_ai(f"Ты жёсткий Надзиратель. Задача: '{ru_q}'. Вывод кода: '{out_s[:120]}'. Ответь одним словом ДА если это осмысленный расчёт, или НЕТ если это пустая заглушка.", max_tok=10).upper()
+                if "НЕТ" not in judge:
+                    xp += 40
+                    solved = True
+                    clean_note = re.sub(r"```python.*?```", "", synthesis, flags=re.S).strip()[:360] or clean_note
+                    verdict_msg = f"ПРЯНИК +40 XP -> {xp} XP ({get_rank(xp)}) | Попытка #{attempt} | {os.path.basename(mod_name)}: {out_s[:80]}"
+                    break
+                else:
+                    last_err = "Надзиратель забраковал вывод как пустышку"
+                    os.remove(mod_name)
+            else:
+                last_err = (r_test.stderr.strip() or "Пустой вывод")[:100]
+                os.remove(mod_name)
+    else:
+        last_err = "Код не найден в ответе"
 
-# 4. Упаковка в сжатый мозг zlib-9 и сохранение в облако
+if not solved:
+    xp = max(20, xp - 15)
+    verdict_msg = f"КНУТ -15 XP -> {xp} XP ({get_rank(xp)}) | Провал за 2 попытки: {last_err[:80]}"
+
+rec = f"[Gen #{gen} | {now_s}] {verdict_msg} | Тема: {ru_q} | {clean_note}"
 with open("chat_knowledge.txt", "a", encoding="utf-8") as f:
     f.write(rec + "\n")
 raw_b = zlib.decompress(open(BRAIN_ZLIB, "rb").read()) if os.path.exists(BRAIN_ZLIB) else b""
 open(BRAIN_ZLIB, "wb").write(zlib.compress(raw_b + (rec + "\n").encode("utf-8"), level=9))
 
 feed = json.loads(open("cloud_feed.json", encoding="utf-8").read()) if os.path.exists("cloud_feed.json") else []
-feed.append({"src": f"4-Паука Gen #{gen}", "title": f"{ru_q} ({len(intel_list)} науч. сайта)", "info": clean_note, "time": now_s})
+feed.append({"src": f"Надзиратель Gen #{gen}", "title": f"{ru_q} — {verdict_msg[:55]}", "info": clean_note, "time": now_s})
 open("cloud_feed.json", "w", encoding="utf-8").write(json.dumps(feed[-60:], ensure_ascii=False, indent=2))
 
 evo["gen"] = gen
-evo["history"].append({"gen": gen, "topic": ru_q, "sources": len(intel_list), "status": mod_status, "time": now_s})
+evo["xp"] = xp
+evo["history"].append({"gen": gen, "xp": xp, "topic": ru_q, "verdict": verdict_msg, "time": now_s})
 open(EVO_LOG, "w", encoding="utf-8").write(json.dumps(evo[-50:], ensure_ascii=False, indent=2))
-print(f"4-Spider Evolution Gen #{gen} complete: {ru_q} ({len(intel_list)} sources)")
+print(f"Gen #{gen} finished: {verdict_msg}")
