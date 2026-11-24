@@ -86,7 +86,10 @@ def spider_wiki(lang, q):
 now_s = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
 mission = open("mission.txt", encoding="utf-8").read().strip() if os.path.exists("mission.txt") else "Оптимизация вычислений"
 past = f"ДИРЕКТИВА: {mission}\n" + read_past_experience()
-evo = json.loads(open(EVO_LOG, encoding="utf-8").read()) if os.path.exists(EVO_LOG) else {"gen": 0, "xp": 100, "history": []}
+try:
+    evo = json.loads(open(EVO_LOG, encoding="utf-8").read()) if os.path.exists(EVO_LOG) else {"gen": 0, "xp": 100, "history": []}
+except Exception:
+    evo = {"gen": 0, "xp": 100, "history": []}
 gen = evo.get("gen", 0) + 1
 xp = evo.get("xp", 100)
 
