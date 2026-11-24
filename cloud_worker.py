@@ -27,7 +27,7 @@ def ask_cloud_ai(prompt, max_tok=450):
             "Content-Type": "application/json"
         })
         resp = json.loads(ur.urlopen(req, timeout=30).read().decode("utf-8"))
-        return resp["choices"]["message"]["content"].strip()
+        first = next(iter(resp.get("choices", [])), {}); return first.get("message", {}).get("content", "").strip()
     except Exception as e:
         print("Cloud AI note:", e)
         return ""
