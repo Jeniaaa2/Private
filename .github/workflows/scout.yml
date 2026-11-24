@@ -1,0 +1,21 @@
+name: Cloud AI Scout
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  scout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python cloud_worker.py
+      - run: |
+          git config user.name "GitHub Cloud Scout"
+          git config user.email "scout@://github.com"
+          git add chat_knowledge.txt compressed_brain.zlib
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Cloud server scout update" && git push)
