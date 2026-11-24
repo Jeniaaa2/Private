@@ -23,19 +23,24 @@ def fetch_wiki(lang, q):
         raw2 = gzip.decompress(r2.read()) if r2.info().get("Content-Encoding") == "gzip" else r2.read()
         page = next(iter(json.loads(raw2.decode("utf-8", "ignore")).get("query", {}).get("pages", {}).values()), {})
         sents = [x.strip() for x in " ".join(page.get("extract", "").split()).split(". ") if len(x.strip()) > 35][:3]
-        return title, ". ".join(sents)[:550]
+        return title, ". ".join(sents)[:600]
     except Exception:
         return "", ""
 
-en_q, ru_q = random.choice(TOPICS)
-t_ru, s_ru = fetch_wiki("ru", ru_q)
-t_en, s_en = fetch_wiki("en", en_q)
 now_s = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
+feed = json.loads(open("cloud_feed.json", encoding="utf-8").read()) if os.path.exists("cloud_feed.json") else []
 
-if s_ru or s_en:
-    rec = f"[GitHub-Сервер {now_s}] ({ru_q}) {t_ru}: {s_ru} | {t_en}: {s_en}"
-    with open("chat_knowledge.txt", "a", encoding="utf-8") as f:
-        f.write(rec + "\n")
-    raw_b = zlib.decompress(open("compressed_brain.zlib", "rb").read()) if os.path.exists("compressed_brain.zlib") else b""
-    open("compressed_brain.zlib", "wb").write(zlib.compress(raw_b + (rec + "\n").encode("utf-8"), level=9))
-    print("OK:", rec[:120])
+# За один запуск на сервере GitHub прорабатываем сразу 2 темы
+for en_q, ru_q in random.sample(TOPICS, 2):
+    t_ru, s_ru = fetch_wiki("ru", ru_q)
+    t_en, s_en = fetch_wiki("en", en_q)
+    if s_ru or s_en:
+        rec = f"[Облачный Бот {now_s}] ({ru_q}) {t_ru}: {s_ru} | {t_en}: {s_en}"
+        with open("chat_knowledge.txt", "a", encoding="utf-8") as f:
+            f.write(rec + "\n")
+        raw_b = zlib.decompress(open("compressed_brain.zlib", "rb").read()) if os.path.exists("compressed_brain.zlib") else b""
+        open("compressed_brain.zlib", "wb").write(zlib.compress(raw_b + (rec + "\n").encode("utf-8"), level=9))
+        feed.append({"src": "Облако GitHub", "title": t_ru or t_en, "info": s_ru or s_en, "time": now_s})
+
+open("cloud_feed.json", "w", encoding="utf-8").write(json.dumps(feed[-60:], ensure_ascii=False, indent=2))
+print("Cloud bot cycle finished successfully.")
