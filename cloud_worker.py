@@ -179,5 +179,6 @@ open("cloud_feed.json", "w", encoding="utf-8").write(json.dumps(feed[-60:], ensu
 evo["gen"] = gen
 evo["xp"] = xp
 evo["history"].append({"gen": gen, "xp": xp, "topic": ru_q, "verdict": verdict_msg, "time": now_s})
-open(EVO_LOG, "w", encoding="utf-8").write(json.dumps(evo[-50:], ensure_ascii=False, indent=2))
+evo["history"] = evo.get("history", [])[-50:]
+open(EVO_LOG, "w", encoding="utf-8").write(json.dumps(evo, ensure_ascii=False, indent=2))
 print(f"Gen #{gen} finished: {verdict_msg}")
