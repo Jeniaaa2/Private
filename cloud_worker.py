@@ -84,7 +84,8 @@ def spider_wiki(lang, q):
     return ""
 
 now_s = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
-past = read_past_experience()
+mission = open("mission.txt", encoding="utf-8").read().strip() if os.path.exists("mission.txt") else "Оптимизация вычислений"
+past = f"ДИРЕКТИВА: {mission}\n" + read_past_experience()
 evo = json.loads(open(EVO_LOG, encoding="utf-8").read()) if os.path.exists(EVO_LOG) else {"gen": 0, "xp": 100, "history": []}
 gen = evo.get("gen", 0) + 1
 xp = evo.get("xp", 100)
@@ -124,7 +125,7 @@ for attempt in (1, 2):
         prompt_exam = (
             f"Ты Стратег и Критик под контролем жёсткого Надзирателя (Поколение #{gen}). Тема: '{ru_q}'. "
             f"Научные данные (4 сайта):\n{combined_intel[:850]}\n"
-            f"1) Сформулируй сильный научный вывод (2 предложения на русском). "
+            f"1) Объясни, как эта прорывная вычислительная технология ускоряет и улучшает саму нашу систему (2 предложения на русском). "
             f"2) Напиши рабочий Python-алгоритм (12-18 строк, только стандартные библиотеки, без input), который доказывает расчёт и печатает результат через print(), в блоке ```python ... ```."
         )
     else:
