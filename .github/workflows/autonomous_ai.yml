@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  models: read
 jobs:
   evolve:
     runs-on: ubuntu-latest
@@ -15,6 +16,10 @@ jobs:
           python-version: '3.11'
       - name: Run Cloud AI Agents
         run: python3 cloud_agents.py
+      - name: Run GitHub Models AI Worker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 cloud_worker.py
       - name: Save Evolution to GitHub
         run: |
           git config user.name "Cloud-AI-Agent"
