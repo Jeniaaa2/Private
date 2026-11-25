@@ -15,7 +15,7 @@ def ask_cloud_ai(prompt, max_tok=450):
     if not GH_TOKEN:
         return ""
     try:
-        url = "https://github.ai"
+        url = "https://models.github.ai/inference/chat/completions"
         payload = json.dumps({
             "model": "gpt-4o-mini",
             "messages": [{"role": "user", "content": prompt}],
