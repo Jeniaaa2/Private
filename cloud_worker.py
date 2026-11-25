@@ -270,6 +270,30 @@ for attempt in (1, 2):
             "dt = round((time.perf_counter() - t0) * 1000, 3)\n"
             f"print(f'Хаффман-кодер [{ru_q}]: было={{len(sample)*8}} бит -> стало={{bits}} бит, время={{dt}} мс')\n"
         ))
+        # 7. Полноамплитудный 5-кубитный квантовый симулятор поиска Гровера (пространство Гильберта 2^5 = 32)
+        engines.append((
+            "Квантовый движок Гровера (5 кубитов)",
+            "import math, cmath, time\n"
+            f"target = {seed_val} % 32\n"
+            "t0 = time.perf_counter()\n"
+            "n_qubits = 5\n"
+            "dim = 1 << n_qubits\n"
+            "inv_s = 1.0 / math.sqrt(dim)\n"
+            "# Перевод регистра в равномерную квантовую суперпозицию H^5 |0>\n"
+            "state = {i: complex(inv_s, 0.0) for i in range(dim)}\n"
+            "# 4 итерации квантового оракула и диффузии Гровера (O(sqrt(N)))\n"
+            "for _ in range(4):\n"
+            "    state[target] = -state.get(target, 0j)\n"
+            "    mean_amp = sum(state.values()) / dim\n"
+            "    state = {i: 2.0 * mean_amp - amp for i, amp in state.items()}\n"
+            "probs = {i: abs(amp) ** 2 for i, amp in state.items()}\n"
+            "norm = round(sum(probs.values()), 6)\n"
+            "p_target = round(probs.get(target, 0.0) * 100.0, 2)\n"
+            "q_entropy = round(-sum(pr * math.log2(pr) for pr in probs.values() if pr > 1e-12), 4)\n"
+            "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
+            f"print(f'Квантовый поиск Гровера [{ru_q}]: |{{target:05b}}>, P={{p_target}}%, H_q={{q_entropy}} бит, Норма={{norm}}, время={{dt}} мкс')\n"
+        ))
+
         eng_name, synth_code = engines[gen % len(engines)]
         synthesis = f"Синтезирован алгоритм [{eng_name}] на базе 4 научных источников.\n```python\n{synth_code}```"
         code_m = re.search(r"```python\s*(.*?)```", synthesis, re.S)
