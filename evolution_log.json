@@ -1,6 +1,6 @@
 {
-  "gen": 20,
-  "xp": 580,
+  "gen": 21,
+  "xp": 620,
   "history": [
     {
       "gen": 9,
@@ -96,6 +96,14 @@
       "verdict": "ПРЯНИК +40 XP -> 580 XP (👑 СВЕРХРАЗУМ) | Попытка #1 | evo_gen20_1795624709.py: Нейросеть XOR [Обучение с подкреплением]: финальная_ошибка=0.5351, эпох=400, вре",
       "ai_diag": "OK (GitHub Models) | Backup: HTTP Error 402: Payment Required | Backup: HTTP Error 402: Payment Required | Backup: HTTP Error 402: Payment Required",
       "time": "2026-11-25 16:38 UTC"
+    },
+    {
+      "gen": 21,
+      "xp": 620,
+      "topic": "Хеш‑шахматы",
+      "verdict": "ПРЯНИК +40 XP -> 620 XP (👑 СВЕРХРАЗУМ) | Попытка #1 | evo_gen21_1795627460.py: Zobrist Hash [Хеш‑шахматы]: ключ=0xfeb606fa4dde, время=6.68 мкс",
+      "ai_diag": "GH_Models: Expecting value: line 1 column 1 (char 0) | Backup: HTTP Error 402: Payment Required",
+      "time": "2026-11-25 17:24 UTC"
     }
   ]
 }
