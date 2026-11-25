@@ -178,12 +178,12 @@ for attempt in (1, 2):
     if not code_m:
         t_low = ru_q.lower()
         seed_val = sum(ord(c) for c in ru_q) + gen * 17
-        # 6 продвинутых вычислительных ядер с динамической параметризацией от Gen #N
         engines = []
         if any(w in t_low for w in ("шахмат", "игр", "позиц", "битов")):
             engines.append((
                 "Bitboard-движок 8x8",
-                f"import time, random\nrandom.seed({seed_val})\n"
+                "import time, random\n"
+                f"random.seed({seed_val})\n"
                 "t0 = time.perf_counter()\n"
                 "board = random.getrandbits(64)\n"
                 "not_a, not_h = 0xfefefefefefefefe, 0x7f7f7f7f7f7f7f7f\n"
@@ -194,76 +194,79 @@ for attempt in (1, 2):
             ))
             engines.append((
                 "Zobrist-хэширование позиций",
-                f"import time, random\nrandom.seed({seed_val})\n"
-                "table = [[random.getrandbits(64) for _ in range(64)] for _ in range(12)]\n"
+                "import time, random\n"
+                f"random.seed({seed_val})\n"
+                "table = {(p_id, sq): random.getrandbits(64) for p_id in range(12) for sq in range(64)}\n"
                 "t0 = time.perf_counter()\n"
                 "h = 0\n"
-                "for p_id in range(12): h ^= table[p_id][(p_id * 5 + 3) % 64]\n"
+                "for p_id in range(12): h ^= table.get((p_id, (p_id * 5 + 3) % 64), 0)\n"
                 "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
                 f"print(f'Zobrist Hash [{ru_q}]: ключ={{hex(h)[:14]}}, время={{dt}} мкс')\n"
             ))
         if any(w in t_low for w in ("монте", "дерев", "поиск", "эврист", "шахмат")):
             engines.append((
                 "MCTS UCB1 Симулятор",
-                f"import math, time, random\nrandom.seed({seed_val})\n"
+                "import math, time, random\n"
+                f"random.seed({seed_val})\n"
                 "t0 = time.perf_counter()\n"
-                "wins, visits =, [2, 2, 2]\n"
+                "wins, visits = {0: 1, 1: 1, 2: 1}, {0: 2, 1: 2, 2: 2}\n"
                 "for total in range(6, 306):\n"
-                "    arm = max(range(3), key=lambda i: wins[i]/visits[i] + 1.41 * math.sqrt(math.log(total)/visits[i]))\n"
-                "    visits[arm] += 1; wins[arm] += random.choice([0, 1])\n"
-                "best = max(range(3), key=lambda i: visits[i])\n"
+                "    arm = max((0, 1, 2), key=lambda i: wins.get(i)/visits.get(i) + 1.41 * math.sqrt(math.log(total)/visits.get(i)))\n"
+                "    visits[arm] += 1; wins[arm] += random.randint(0, 1)\n"
+                "best = max((0, 1, 2), key=lambda i: visits.get(i))\n"
                 "dt = round((time.perf_counter() - t0) * 1000, 3)\n"
                 f"print(f'MCTS UCB1 [{ru_q}]: лучшая_ветка={{best}}, симуляций=300, время={{dt}} мс')\n"
             ))
         if any(w in t_low for w in ("граф", "дейкстр", "пути", "квантов", "крипто")):
             engines.append((
                 "Графовый поиск A* (A-Star)",
-                f"import heapq, time\n"
+                "import heapq, time\n"
                 "t0 = time.perf_counter()\n"
                 "grid = {(x, y): (x + y) % 3 + 1 for x in range(8) for y in range(8)}\n"
-                "pq, cost = [(0, (0, 0))], {(0, 0): 0}\n"
+                "pq, cost = [(0, 0, 0)], {(0, 0): 0}\n"
                 "while pq:\n"
-                "    _, cur = heapq.heappop(pq)\n"
-                "    if cur == (7, 7): break\n"
+                "    _, cx, cy = heapq.heappop(pq)\n"
+                "    if (cx, cy) == (7, 7): break\n"
                 "    for dx, dy in ((1,0),(0,1),(-1,0),(0,-1)):\n"
-                "        nxt = (cur[0]+dx, cur[1]+dy)\n"
-                "        if nxt in grid and cost[cur] + grid[nxt] < cost.get(nxt, 9999):\n"
-                "            cost[nxt] = cost[cur] + grid[nxt]\n"
-                "            heapq.heappush(pq, (cost[nxt] + abs(7-nxt[0]) + abs(7-nxt[1]), nxt))\n"
+                "        nx, ny = cx + dx, cy + dy\n"
+                "        if (nx, ny) in grid and cost.get((cx, cy)) + grid.get((nx, ny)) < cost.get((nx, ny), 9999):\n"
+                "            cost[(nx, ny)] = cost.get((cx, cy)) + grid.get((nx, ny))\n"
+                "            heapq.heappush(pq, (cost.get((nx, ny)) + abs(7 - nx) + abs(7 - ny), nx, ny))\n"
                 "dt = round((time.perf_counter() - t0) * 1000, 3)\n"
-                f"print(f'A* Граф 8x8 [{ru_q}]: цена_пути={{cost.get((7,7))}}, узлов={{len(cost)}}, время={{dt}} мс')\n"
+                f"print(f'A* Граф 8x8 [{ru_q}]: цена_пути={{cost.get((7, 7))}}, узлов={{len(cost)}}, время={{dt}} мс')\n"
             ))
         if any(w in t_low for w in ("обучен", "нейро", "подкреплен", "интеллект")):
             engines.append((
                 "Нейросеть Backprop XOR",
-                f"import math, time, random\nrandom.seed({seed_val})\n"
+                "import math, time, random\n"
+                f"random.seed({seed_val})\n"
                 "sig = lambda x: 1 / (1 + math.exp(-max(-20, min(20, x))))\n"
                 "t0 = time.perf_counter()\n"
-                "w1, w2 = [random.uniform(-1, 1) for _ in range(4)], [random.uniform(-1, 1) for _ in range(2)]\n"
+                "w11, w12, w21, w22, v1, v2 = (random.uniform(-1, 1) for _ in range(6))\n"
                 "for _ in range(400):\n"
                 "    for x1, x2, y in ((0,0,0),(0,1,1),(1,0,1),(1,1,0)):\n"
-                "        h1, h2 = sig(x1*w1[0]+x2*w1[1]), sig(x1*w1[2]+x2*w1[3])\n"
-                "        out = sig(h1*w2[0]+h2*w2[1]); err = y - out\n"
-                "        w2[0] += 0.5*err*h1; w2[1] += 0.5*err*h2\n"
+                "        h1, h2 = sig(x1*w11 + x2*w12), sig(x1*w21 + x2*w22)\n"
+                "        out = sig(h1*v1 + h2*v2); err = y - out\n"
+                "        v1 += 0.5*err*h1; v2 += 0.5*err*h2\n"
                 "dt = round((time.perf_counter() - t0) * 1000, 3)\n"
                 f"print(f'Нейросеть XOR [{ru_q}]: финальная_ошибка={{round(abs(err), 4)}}, эпох=400, время={{dt}} мс')\n"
             ))
-        # Универсальный префиксный кодер Хаффмана (всегда в пуле)
         engines.append((
             "Кодер частот Хаффмана",
-            f"import heapq, time\nfrom collections import Counter\n"
+            "import heapq, time\nfrom collections import Counter\n"
             f"sample = ({ru_q!r} + ' ' + {combined_intel[:180]!r}) * 5\n"
             "t0 = time.perf_counter()\n"
             "freq = Counter(sample)\n"
-            "heap = [[w, [ch, '']] for ch, w in freq.items()]\n"
+            "heap = [(w, id(ch), {ch: ''}) for ch, w in freq.items()]\n"
             "heapq.heapify(heap)\n"
             "while len(heap) > 1:\n"
-            "    lo, hi = heapq.heappop(heap), heapq.heappop(heap)\n"
-            "    for p in lo[1:]: p[1] = '0' + p[1]\n"
-            "    for p in hi[1:]: p[1] = '1' + p[1]\n"
-            "    heapq.heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])\n"
-            "codes = dict(heap[0][1:]) if heap else {}\n"
-            "bits = sum(len(codes[c]) for c in sample)\n"
+            "    w1, _, d1 = heapq.heappop(heap)\n"
+            "    w2, _, d2 = heapq.heappop(heap)\n"
+            "    merged = {k: '0' + v for k, v in d1.items()}\n"
+            "    merged.update({k: '1' + v for k, v in d2.items()})\n"
+            "    heapq.heappush(heap, (w1 + w2, id(merged), merged))\n"
+            "_, _, codes = heap.pop() if heap else (0, 0, {})\n"
+            "bits = sum(len(codes.get(c, '0')) for c in sample)\n"
             "dt = round((time.perf_counter() - t0) * 1000, 3)\n"
             f"print(f'Хаффман-кодер [{ru_q}]: было={{len(sample)*8}} бит -> стало={{bits}} бит, время={{dt}} мс')\n"
         ))
