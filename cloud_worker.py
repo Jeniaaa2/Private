@@ -11,7 +11,43 @@ def get_rank(xp):
     if xp >= 120: return "⚡ ИССЛЕДОВАТЕЛИ"
     return "⛓️ ШТРАФБАТ"
 
+LAST_AI_ERR = "OK (GitHub Models)"
 def ask_cloud_ai(prompt, max_tok=450):
+    global LAST_AI_ERR
+    if GH_TOKEN:
+        try:
+            u = "https://" + "models.github.ai" + "/inference/chat/completions"
+            payload = json.dumps({
+                "model": "openai/gpt-4o-mini",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": max_tok,
+                "temperature": 0.75
+            }).encode("utf-8")
+            req = ur.Request(u, data=payload, headers={
+                "Authorization": f"Bearer {GH_TOKEN}",
+                "Content-Type": "application/json"
+            })
+            resp = json.loads(ur.urlopen(req, timeout=25).read().decode("utf-8"))
+            txt = next(iter(resp.get("choices", [])), {}).get("message", {}).get("content", "").strip()
+            if txt:
+                LAST_AI_ERR = "OK (GitHub Models gpt-4o-mini)"
+                return txt
+        except Exception as e:
+            LAST_AI_ERR = f"GH_Models: {e}"
+    # Второй контур: открытый бесплатный облачный ИИ-шлюз для серверов GitHub
+    try:
+        u2 = "https://" + "text.pollinations.ai" + "/"
+        p2 = json.dumps({"messages": [{"role": "user", "content": prompt}], "model": "openai"}).encode("utf-8")
+        r2 = ur.Request(u2, data=p2, headers={"Content-Type": "application/json", "User-Agent": "CloudResearch/1.0"})
+        txt2 = ur.urlopen(r2, timeout=25).read().decode("utf-8", "ignore").strip()
+        if len(txt2) > 20:
+            LAST_AI_ERR = f"{LAST_AI_ERR} -> Сработал резерв Pollinations AI"
+            return txt2
+    except Exception as e2:
+        LAST_AI_ERR = f"{LAST_AI_ERR} | Backup: {e2}"
+    return ""
+
+def _unused_old_ask(prompt, max_tok=450):
     if not GH_TOKEN:
         return ""
     try:
@@ -197,7 +233,7 @@ open("cloud_feed.json", "w", encoding="utf-8").write(json.dumps(feed[-60:], ensu
 
 evo["gen"] = gen
 evo["xp"] = xp
-evo["history"].append({"gen": gen, "xp": xp, "topic": ru_q, "verdict": verdict_msg, "time": now_s})
+evo["history"].append({"gen": gen, "xp": xp, "topic": ru_q, "verdict": verdict_msg, "ai_diag": LAST_AI_ERR, "time": now_s})
 evo["history"] = evo.get("history", [])[-50:]
 open(EVO_LOG, "w", encoding="utf-8").write(json.dumps(evo, ensure_ascii=False, indent=2))
 print(f"Gen #{gen} finished: {verdict_msg}")
