@@ -1,0 +1,1 @@
+import Пауза: Command '['/data/data/com.termux/files/home/llama.cpp/build/bin/llama-cli', '-m', '/data/data/com.termux/files/home/models/qwen.gguf', '-t', '4', '-n', '450', '--temp', '0.7', '--single-turn', '-f', '/data/data/com.termux/files/home/ai_sandbox/prompt.txt']' timed out after 90 seconds
