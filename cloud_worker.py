@@ -14,6 +14,27 @@ def get_rank(xp):
 LAST_AI_ERR = "OK (GitHub Models)"
 def ask_cloud_ai(prompt, max_tok=450):
     global LAST_AI_ERR
+    gem_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if gem_key:
+        try:
+            gu = f"https://googleapis.com{gem_key}"
+            g_payload = json.dumps({
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"maxOutputTokens": max_tok, "temperature": 0.75}
+            }).encode("utf-8")
+            g_req = ur.Request(gu, data=g_payload, headers={"Content-Type": "application/json"})
+            g_resp = json.loads(ur.urlopen(g_req, timeout=25).read().decode("utf-8"))
+            cands = g_resp.get("candidates", [])
+            parts = next(iter(cands), {}).get("content", {}).get("parts", [])
+            g_txt = next(iter(parts), {}).get("text", "").strip()
+            if g_txt:
+                LAST_AI_ERR = "OK (Gemini 2.5 Flash)"
+                return g_txt
+        except Exception as ge:
+            LAST_AI_ERR = f"Gemini: {ge}"
+
+def _backup_ask_ai(prompt, max_tok=450):
+    global LAST_AI_ERR
     if GH_TOKEN:
         try:
             u = "https://" + "models.github.ai" + "/inference/chat/completions"
