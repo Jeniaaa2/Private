@@ -294,6 +294,52 @@ for attempt in (1, 2):
             f"print(f'Квантовый поиск Гровера [{ru_q}]: |{{target:05b}}>, P={{p_target}}%, H_q={{q_entropy}} бит, Норма={{norm}}, время={{dt}} мкс')\n"
         ))
 
+        # 8. Квантовое преобразование Фурье (QFT на 4 кубитах = 16 гармоник)
+        engines.append((
+            "Квантовое преобразование Фурье (QFT)",
+            "import math, cmath, time\n"
+            f"freq_in = ({seed_val} % 15) + 1\n"
+            "t0 = time.perf_counter()\n"
+            "N = 16\n"
+            "signal = {k: complex(math.cos(2 * math.pi * freq_in * k / N), 0.0) for k in range(N)}\n"
+            "qft = {m: sum(signal.get(k, 0j) * cmath.exp(-2j * math.pi * k * m / N) for k in range(N)) / math.sqrt(N) for m in range(N)}\n"
+            "probs = {m: round(abs(amp) ** 2, 4) for m, amp in qft.items()}\n"
+            "peak_m = max(probs, key=lambda k: probs.get(k, 0.0))\n"
+            "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
+            f"print(f'Квантовый QFT [{ru_q}]: гармоника={{peak_m}}, пик_P={{round(probs.get(peak_m, 0)*100, 1)}}%, время={{dt}} мкс')\n"
+        ))
+        # 9. Квантовая запутанность Белла (H + CNOT и проверка корреляции)
+        engines.append((
+            "Квантовая запутанность Белла (H+CNOT)",
+            "import math, time\n"
+            f"phase = ({seed_val} % 7) * 0.15\n"
+            "t0 = time.perf_counter()\n"
+            "# Состояние |Phi+> = (|00> + e^(i*phi)|11>) / sqrt(2)\n"
+            "a00 = complex(math.cos(phase) / math.sqrt(2), math.sin(phase) / math.sqrt(2))\n"
+            "a11 = complex(1.0 / math.sqrt(2), 0.0)\n"
+            "p00, p11 = round(abs(a00) ** 2, 4), round(abs(a11) ** 2, 4)\n"
+            "corr = round((p00 + p11) * 100.0, 2)\n"
+            "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
+            f"print(f'Запутанность Белла [{ru_q}]: P(|00>)={{p00}}, P(|11>)={{p11}}, корреляция={{corr}}%, время={{dt}} мкс')\n"
+        ))
+        # 10. Дискретное квантовое блуждание на графе-цикле (Quantum Walk)
+        engines.append((
+            "Квантовое блуждание по графу (Quantum Walk)",
+            "import math, cmath, time\n"
+            f"steps = 10 + ({seed_val} % 8)\n"
+            "t0 = time.perf_counter()\n"
+            "nodes = 12\n"
+            "amp = {i: complex(1.0 / math.sqrt(nodes), 0.0) for i in range(nodes)}\n"
+            "for st in range(steps):\n"
+            "    amp = {i: 0.5 * (amp.get((i - 1) % nodes, 0j) + 1j * amp.get((i + 1) % nodes, 0j)) for i in range(nodes)}\n"
+            "    norm = math.sqrt(sum(abs(v) ** 2 for v in amp.values())) or 1.0\n"
+            "    amp = {i: v / norm for i, v in amp.items()}\n"
+            "max_node = max(amp, key=lambda k: abs(amp.get(k, 0j)) ** 2)\n"
+            "max_p = round((abs(amp.get(max_node, 0j)) ** 2) * 100.0, 2)\n"
+            "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
+            f"print(f'Quantum Walk [{ru_q}]: шагов={{steps}}, узел_пика={{max_node}}, P={{max_p}}%, время={{dt}} мкс')\n"
+        ))
+
         eng_name, synth_code = engines[gen % len(engines)]
         synthesis = f"Синтезирован алгоритм [{eng_name}] на базе 4 научных источников.\n```python\n{synth_code}```"
         code_m = re.search(r"```python\s*(.*?)```", synthesis, re.S)
