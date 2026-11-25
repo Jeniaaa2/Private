@@ -57,17 +57,24 @@ def run_darwin_crossover(gen_num, topic_name, seed_val):
     )
     open(hybrid_path, "w", encoding="utf-8").write(code)
 
-    # 3. Турнир на выживание (30 контрольных прогонов)
-    t_b0 = time.perf_counter()
-    last_out = ""
-    for _ in range(30):
-        res = subprocess.run(["python", hybrid_path], capture_output=True, text=True, timeout=5)
-        if res.returncode != 0:
+    # 3. Честный турнир в памяти (500 прогонов скомпилированного байт-кода без накладных расходов процесса)
+    import io, contextlib
+    try:
+        compiled = compile(code, hybrid_path, "exec")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            exec(compiled, {})
+        last_out = buf.getvalue().strip()
+        t_b0 = time.perf_counter()
+        devnull = io.StringIO()
+        with contextlib.redirect_stdout(devnull):
+            for _ in range(500):
+                exec(compiled, {})
+        avg_us = max(1.0, ((time.perf_counter() - t_b0) / 500.0) * 1e6)
+    except Exception:
+        if os.path.exists(hybrid_path):
             os.remove(hybrid_path)
-            return "Отбракован в турнире (сбой мутации)"
-        last_out = res.stdout.strip()
-
-    avg_us = max(1.0, ((time.perf_counter() - t_b0) / 30.0) * 1e6)
+        return "Отбракован в турнире (сбой мутации)"
     ops_sec = int(1_000_000 / avg_us)
     old_rec = g.get("record_ops", 1000)
 
