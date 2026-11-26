@@ -377,7 +377,7 @@ for attempt in (1, 2):
             "sat = sum(1 for cl in clauses if any((assign.get(v, False) if sgn == 1 else not assign.get(v, False)) for v, sgn in cl))\n"
             "ratio = round((sat / n_clauses) * 100.0, 1)\n"
             "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
-            "gy = os.path.expanduser('~/ai_cloud/graveyard.md')\n"
+            "gy = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'graveyard.md')\n"
             "if ratio < 92.0 and os.path.isdir(os.path.dirname(gy)):\n"
             "    with open(gy, 'a', encoding='utf-8') as f:\n"
             f"        f.write(f'- [Тупик 3-SAT | {ru_q}] Покрытие={{ratio}}% < 92% — жадная эвристика отброшена\\n')\n"

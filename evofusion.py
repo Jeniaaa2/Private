@@ -1,6 +1,6 @@
 import os, json, time, math, cmath, random, glob, subprocess
 
-CLD = os.path.expanduser("~/ai_cloud")
+CLD = os.path.dirname(os.path.abspath(__file__))
 MOD_DIR = os.path.join(CLD, "ai_core_modules")
 ARCH_DIR = os.path.join(MOD_DIR, "archive")
 GENOME_PATH = os.path.join(CLD, "genome.json")

@@ -1,6 +1,6 @@
 import os, json, hashlib, time
 
-CLD = os.path.expanduser("~/ai_cloud")
+CLD = os.path.dirname(os.path.abspath(__file__))
 HASH_DB = os.path.join(CLD, "seen_hashes.json")
 ENCYCLOPEDIA = os.path.join(CLD, "master_encyclopedia.md")
 

@@ -1,6 +1,6 @@
 import os
 
-CLD = os.path.expanduser("~/ai_cloud")
+CLD = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(CLD, "chess_arena.html")
 
 def build_chess(gen=24, xp=740):
