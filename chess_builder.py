@@ -1,0 +1,98 @@
+import os
+
+CLD = os.path.expanduser("~/ai_cloud")
+OUT = os.path.join(CLD, "chess_arena.html")
+
+def build_chess(gen=24, xp=740):
+    html = f"""<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Шахматы ИИ Gen #{gen}</title>
+<style>
+*{{box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}}
+body{{margin:0;background:#0f172a;color:#f8fafc;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;padding:10px}}
+h2{{margin:4px 0;font-size:18px;color:#38bdf8}}
+.sub{{font-size:12px;color:#94a3b8;margin-bottom:8px}}
+.bar{{display:flex;gap:6px;margin-bottom:8px}}
+button,select{{background:#1e293b;color:#fff;border:1px solid #334155;border-radius:8px;padding:8px 11px;font-size:14px}}
+.board{{display:grid;grid-template-columns:repeat(8,1fr);width:94vw;max-width:420px;height:94vw;max-height:420px;border:3px solid #334155}}
+.sq{{display:flex;align-items:center;justify-content:center;font-size:min(9.5vw,42px);position:relative}}
+.l{{background:#e2e8f0;color:#0f172a}}.d{{background:#475569;color:#0f172a}}
+.sel{{background:#facc15!important}}
+.hint::after{{content:'';width:26%;height:26%;background:rgba(14,165,233,.85);border-radius:50%;position:absolute}}
+.st{{margin-top:8px;background:#1e293b;border-radius:10px;padding:8px;width:94vw;max-width:420px;text-align:center;font-size:14px}}
+.th{{font-size:11px;color:#38bdf8;margin-top:3px}}
+</style></head><body>
+<h2>♟️ Шахматы со СВЕРХРАЗУМОМ</h2>
+<div class="sub">Поколение Gen #{gen} • {xp} XP</div>
+<div class="bar">
+<select id="lv"><option value="2">Новичок</option><option value="3" selected>Тактик</option><option value="4">Мастер</option></select>
+<button onclick="init()">🔄 Заново</button><button onclick="undo()">↩️ Назад</button>
+</div>
+<div class="board" id="b"></div>
+<div class="st"><div id="st">Ваш ход (Белые)</div><div class="th" id="th">Нажмите на фигуру</div></div>
+<script>
+const P={{K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
+const V={{p:100,n:320,b:330,r:500,q:900,k:20000}};
+let B=[],T='w',S=null,M=[],H=[],N=0;
+function init(){{
+B=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
+T='w';S=null;M=[];H=[];document.getElementById('st').innerText='Ваш ход (Белые)';draw();
+}}
+const isW=p=>p&&p===p.toUpperCase(),isB=p=>p&&p===p.toLowerCase();
+function pm(b,s){{
+let m=[];
+for(let r=0;r<8;r++)for(let c=0;c<8;c++){{
+let p=b[r][c];if(!p||(s=='w'&&!isW(p))||(s=='b'&&!isB(p)))continue;
+let t=p.toLowerCase(),d=s=='w'?-1:1,sr=s=='w'?6:1;
+if(t=='p'){{
+if(r+d>=0&&r+d<8&&!b[r+d][c]){{m.push({{fr:r,fc:c,tr:r+d,tc:c}});if(r==sr&&!b[r+2*d][c])m.push({{fr:r,fc:c,tr:r+2*d,tc:c}});}}
+for(let dc of[-1,1])if(r+d>=0&&r+d<8&&c+dc>=0&&c+dc<8){{let x=b[r+d][c+dc];if(x&&(s=='w'?isB(x):isW(x)))m.push({{fr:r,fc:c,tr:r+d,tc:c+dc}});}}
+}}else if(t=='n'){{
+for(let[dr,dc]of[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],,[2,-1],]){{let nr=r+dr,nc=c+dc;if(nr>=0&&nr<8&&nc>=0&&nc<8){{let x=b[nr][nc];if(!x||(s=='w'?isB(x):isW(x)))m.push({{fr:r,fc:c,tr:nr,tc:nc}});}}}}
+}}else if(t=='k'){{
+for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc){{let nr=r+dr,nc=c+dc;if(nr>=0&&nr<8&&nc>=0&&nc<8){{let x=b[nr][nc];if(!x||(s=='w'?isB(x):isW(x)))m.push({{fr:r,fc:c,tr:nr,tc:nc}});}}}}
+}}else{{
+let ds=[];if(t=='r'||t=='q')ds.push([-1,0],,[0,-1],);if(t=='b'||t=='q')ds.push([-1,-1],[-1,1],[1,-1],);
+for(let[dr,dc]of ds){{let nr=r+dr,nc=c+dc;while(nr>=0&&nr<8&&nc>=0&&nc<8){{let x=b[nr][nc];if(!x)m.push({{fr:r,fc:c,tr:nr,tc:nc}});else{{if(s=='w'?isB(x):isW(x))m.push({{fr:r,fc:c,tr:nr,tc:nc}});break;}}nr+=dr;nc+=dc;}}}}
+}}}}return m;
+}}
+function mv(b,m){{let n=b.map(r=>r.slice()),p=n[m.fr][m.fc];n[m.tr][m.tc]=p;n[m.fr][m.fc]='';if(p=='P'&&m.tr==0)n[m.tr][m.tc]='Q';if(p=='p'&&m.tr==7)n[m.tr][m.tc]='q';return n;}}
+function chk(b,s){{let k=s=='w'?'K':'k',kr=-1,kc=-1;for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(b[r][c]==k){{kr=r;kc=c;}}return kr<0||pm(b,s=='w'?'b':'w').some(m=>m.tr==kr&&m.tc==kc);}}
+const lm=(b,s)=>pm(b,s).filter(m=>!chk(mv(b,m),s));
+function ev(b){{let s=0;for(let r=0;r<8;r++)for(let c=0;c<8;c++){{let p=b[r][c];if(!p)continue;let v=(V[p.toLowerCase()]||0)+(7-Math.abs(3.5-r)-Math.abs(3.5-c))*4;s+=isB(p)?v:-v;}}return s;}}
+function ab(b,d,a,bt,mx){{
+N++;let s=mx?'b':'w',ms=lm(b,s);if(!d||!ms.length)return !ms.length?(chk(b,s)?(mx?-99999-d:99999+d):0):ev(b);
+if(mx){{let v=-1e9;for(let m of ms){{v=Math.max(v,ab(mv(b,m),d-1,a,bt,0));a=Math.max(a,v);if(bt<=a)break;}}return v;}}
+else{{let v=1e9;for(let m of ms){{v=Math.min(v,ab(mv(b,m),d-1,a,bt,1));bt=Math.min(bt,v);if(bt<=a)break;}}return v;}}
+}}
+function ai(){{
+let d=+document.getElementById('lv').value,ms=lm(B,'b');
+if(!ms.length){{document.getElementById('st').innerText=chk(B,'b')?'🏆 ВЫ ПОБЕДИЛИ!':'🤝 Ничья';return;}}
+N=0;let t0=performance.now(),bm=ms,bv=-1e9;ms.sort(()=>Math.random()-.5);
+for(let m of ms){{let v=ab(mv(B,m),d-1,-1e9,1e9,0);if(v>bv){{bv=v;bm=m;}}}}
+B=mv(B,bm);T='w';let pmw=lm(B,'w');
+document.getElementById('st').innerText=!pmw.length?(chk(B,'w')?'💀 Мат от ИИ!':'🤝 Ничья'):(chk(B,'w')?'⚠️ ШАХ! Ваш ход':'Ваш ход (Белые)');
+document.getElementById('th').innerText=`Позиций: ${{N}} • ${{Math.round(performance.now()-t0)}} мс`;draw();
+}}
+function tap(r,c){{
+if(T!='w')return;let f=M.find(m=>m.tr==r&&m.tc==c);
+if(f){{H.push(B.map(x=>x.slice()));B=mv(B,f);S=null;M=[];T='b';document.getElementById('st').innerText='🤔 ИИ думает...';draw();setTimeout(ai,50);return;}}
+if(isW(B[r][c])){{S={{r,c}};M=lm(B,'w').filter(m=>m.fr==r&&m.fc==c);}}else{{S=null;M=[];}}draw();
+}}
+function undo(){{if(H.length&&T=='w'){{B=H.pop();S=null;M=[];draw();}}}}
+function draw(){{
+const e=document.getElementById('b');e.innerHTML='';
+for(let r=0;r<8;r++)for(let c=0;c<8;c++){{
+let q=document.createElement('div');q.className='sq '+((r+c)%2?'d':'l');
+if(S&&S.r==r&&S.c==c)q.classList.add('sel');
+if(M.some(m=>m.tr==r&&m.tc==c))q.classList.add('hint');
+q.innerText=P[B[r][c]]||'';q.onclick=()=>tap(r,c);e.appendChild(q);
+}}}}
+init();
+</script></body></html>"""
+    open(OUT, "w", encoding="utf-8").write(html)
+    return OUT
+
+if __name__ == "__main__":
+    print("OK:", build_chess())
