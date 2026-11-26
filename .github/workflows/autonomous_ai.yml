@@ -18,7 +18,6 @@ jobs:
         run: python3 cloud_agents.py
       - name: Run GitHub Models AI Worker
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 cloud_worker.py
       - name: Save Evolution to GitHub
