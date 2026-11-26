@@ -65,3 +65,6 @@ def transform(text: str) -> str:
 ## Gen #35 — Квантовое компрессирование шахматных графов (2026-11-26 21:52 UTC)
 - [Wiki EN] Outline of algorithms: The following outline is provided as an overview of and topical guide to algorithms: An algorithm is a finite, well-defined sequence of instructions or rules for solving a problem or performing a computation. Algorithms are central to computer science, mathematics, operations research, 
 
+## Gen #37 — Шахматные графовые S-box (2026-11-26 23:53 UTC)
+- [Wiki EN] Algebraic notation (chess): Algebraic notation is the standard method of chess notation, used for recording and describing moves. It is based on a system of coordinates to uniquely identify each square on the board
+

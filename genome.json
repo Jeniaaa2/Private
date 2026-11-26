@@ -1,7 +1,7 @@
 {
   "qubits": 4,
   "depth": 7,
-  "alpha_gain": 0.85,
-  "record_ops": 53056,
-  "champions": 5
+  "alpha_gain": 0.894,
+  "record_ops": 61804,
+  "champions": 6
 }
