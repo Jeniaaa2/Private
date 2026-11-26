@@ -55,3 +55,7 @@ def transform(text: str) -> str:
     # Возвращаем результат
     return f"Ключевые термины: {', '.join(top_terms)}. Сводка: {summary}"
 ```
+## Gen #33 — *Графическое квантовое шифрование* (2026-11-26 19:36 UTC)
+- [Wiki RU] IEEE P1363: IEEE P1363 — проект Института инженеров по электротехнике и электронике (англ. Institute of Electrical and Electronics Engineers, IEEE) по стандартизации криптосистем с открытым ключом
+- [Wiki EN] Caesar cipher: A Caesar cipher is one of the simplest and most widely known encryption techniques used in cryptography. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some fixed number of positions along the alphabet
+
