@@ -1,0 +1,1 @@
+- [Тупик 3-SAT | Quantum‑Heuristic Chess Graphs] Покрытие=91.7% < 92% — жадная эвристика отброшена
