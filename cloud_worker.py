@@ -381,6 +381,15 @@ for attempt in (1, 2):
                     xp += 40
                     solved = True
                     clean_note = re.sub(r"```python.*?```", "", synthesis, flags=re.S).strip()[:360] or clean_note
+                    try:
+                        import self_healer
+                        if not locals().get('run_ok', True):
+                            ok_h, out_h, tag_h = self_healer.heal_module(mod_path, str(locals().get('err_out', 'Error')), ru_q)
+                            if ok_h:
+                                run_ok = True
+                                mod_out = f'[{tag_h}] {out_h}'
+                    except Exception:
+                        pass
                     verdict_msg = f"ПРЯНИК +40 XP -> {xp} XP ({get_rank(xp)}) | Попытка #{attempt} | {os.path.basename(mod_name)}: {out_s[:80]}"
                     break
                 else:
