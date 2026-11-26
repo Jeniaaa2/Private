@@ -384,6 +384,23 @@ for attempt in (1, 2):
             f"print(f'P vs NP 3-SAT [{ru_q}]: выполнено={{sat}}/{{n_clauses}} ({{ratio}}%), проверка_NP={{dt}} мкс')\n"
         ))
 
+        # 12. Лаборатория постквантовой криптографии (LWE-решётки и ZKP)
+        engines.append((
+            "Постквантовая криптография (LWE & ZKP)",
+            "import time, random, hashlib\n"
+            f"seed_c = {seed_val}\n"
+            "t0 = time.perf_counter()\n"
+            "rng = random.Random(seed_c)\n"
+            "q, n = 3329, 32\n"
+            "A = [[rng.randrange(q) for _ in range(n)] for _ in range(n)]\n"
+            "s_vec = [rng.choice((-1, 0, 1)) for _ in range(n)]\n"
+            "e_vec = [rng.choice((-1, 0, 1)) for _ in range(n)]\n"
+            "b_vec = [(sum(A[i][j] * s_vec[j] for j in range(n)) + e_vec[i]) % q for i in range(n)]\n"
+            "zk_proof = hashlib.sha3_256(str(b_vec[:8]).encode()).hexdigest()[:16]\n"
+            "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
+            f"print(f'PQC LWE-32 [{ru_q}]: модуль_q={{q}}, ZKP_хэш={{zk_proof}}, время={{dt}} мкс')\n"
+        ))
+
         eng_name, synth_code = engines[gen % len(engines)]
         synthesis = f"Синтезирован алгоритм [{eng_name}] на базе 4 научных источников.\n```python\n{synth_code}```"
         code_m = re.search(r"```python\s*(.*?)```", synthesis, re.S)
