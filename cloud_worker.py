@@ -412,3 +412,11 @@ evo["history"].append({"gen": gen, "xp": xp, "topic": ru_q, "verdict": verdict_m
 evo["history"] = evo.get("history", [])[-50:]
 open(EVO_LOG, "w", encoding="utf-8").write(json.dumps(evo, ensure_ascii=False, indent=2))
 print(f"Gen #{gen} finished: {verdict_msg}")
+try:
+        import knowledge_dedup, evofusion
+        nc, tc = knowledge_dedup.filter_and_catalog(gen, ru_q, combined_intel)
+        f_out = evofusion.run_darwin_crossover(gen, ru_q, sum(ord(c) for c in ru_q))
+        verdict_msg += f" | Новых фактов: {nc}/{tc} || {f_out}"
+    except Exception:
+        pass
+
