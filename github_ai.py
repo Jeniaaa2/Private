@@ -17,7 +17,6 @@ def ask_github_ai(topic, intel):
     base = os.path.dirname(os.path.abspath(__file__))
     pdir = os.path.join(base, "ai_core_modules", "auto_plugins")
     os.makedirs(pdir, exist_ok=True)
-    status = ""
 
     best_score = 0.0
     for fn in sorted([f for f in os.listdir(pdir) if f.endswith(".py")]):
@@ -48,10 +47,10 @@ def ask_github_ai(topic, intel):
     ]
     for url, mdl, tok, label in endpoints:
         try:
-            hdrs = {"Content-Type": "application/json", "User-Agent": "QuantumBot/2.0"}
+            hdrs = {"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
             if tok:
                 hdrs["Authorization"] = f"Bearer {tok}"
-            body = json.dumps({"model": mdl, "messages": [{"role": "user", "content": prompt}], "max_tokens": 900}).encode()
+            body = json.dumps({"model": mdl, "messages": [{"role": "user", "content": prompt}]}).encode()
             res = json.loads(ur.urlopen(ur.Request(url, data=body, headers=hdrs), timeout=35).read().decode())
             ans = res["choices"]["message"]["content"].strip()
             if ans:
