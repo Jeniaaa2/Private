@@ -1,6 +1,6 @@
 {
-  "gen": 24,
-  "xp": 740,
+  "gen": 25,
+  "xp": 780,
   "history": [
     {
       "gen": 9,
@@ -128,6 +128,14 @@
       "verdict": "ПРЯНИК +40 XP -> 740 XP (👑 СВЕРХРАЗУМ) | Попытка #1 | evo_gen24_1795679819.py: A* Граф 8x8 [Перспективы квантового снижения графов]: цена_пути=29, узлов=64, вр",
       "ai_diag": "GH_Models: Expecting value: line 1 column 1 (char 0) | Backup: HTTP Error 402: Payment Required",
       "time": "2026-11-26 07:56 UTC"
+    },
+    {
+      "gen": 25,
+      "xp": 780,
+      "topic": "Квантовый граф‑сжатие",
+      "verdict": "ПРЯНИК +40 XP -> 780 XP (👑 СВЕРХРАЗУМ) | Попытка #1 | evo_gen25_1795683755.py: Запутанность Белла [Квантовый граф‑сжатие]: P(|00>)=0.5, P(|11>)=0.5, корреляция",
+      "ai_diag": "GH_Models: Expecting value: line 1 column 1 (char 0) | Backup: HTTP Error 503: Service Unavailable",
+      "time": "2026-11-26 09:02 UTC"
     }
   ]
 }
