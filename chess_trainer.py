@@ -24,6 +24,13 @@ def train_self_play(gen=28):
         else:
             w["elo"] += 2
     open(W_FILE, "w", encoding="utf-8").write(json.dumps(w, indent=2))
+    try:
+        import github_ai
+        note = github_ai.ask_github_ai(f"Gen #{gen} AI & Quantum Algorithms", "")
+        if note:
+            return f"Шахматный Self-Play: Elo={w['elo']} ({w['games']} партий) | {note[:85]}"
+    except Exception:
+        pass
     return f"Шахматный Self-Play: Elo={w['elo']} ({w['games']} партий, слон={w['bishop']}, центр={w['center']})"
 
 if __name__ == "__main__":
