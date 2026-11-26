@@ -62,3 +62,6 @@ def transform(text: str) -> str:
 ## Gen #34 — Квантовое уплотнение графов (2026-11-26 20:52 UTC)
 - [Wiki RU] Словесные названия российского оружия: Эта страница — глоссарий официальных словесных названий российского оружия. О неофициальных (жаргонных) русскоязычных названиях оружия см
 
+## Gen #35 — Квантовое компрессирование шахматных графов (2026-11-26 21:52 UTC)
+- [Wiki EN] Outline of algorithms: The following outline is provided as an overview of and topical guide to algorithms: An algorithm is a finite, well-defined sequence of instructions or rules for solving a problem or performing a computation. Algorithms are central to computer science, mathematics, operations research, 
+
