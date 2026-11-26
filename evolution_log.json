@@ -1,6 +1,6 @@
 {
-  "gen": 31,
-  "xp": 1020,
+  "gen": 32,
+  "xp": 1060,
   "history": [
     {
       "gen": 9,
@@ -184,6 +184,14 @@
       "verdict": "ПРЯНИК +40 XP -> 1020 XP (👑 СВЕРХРАЗУМ) | Попытка #1 | evo_gen31_1795713019.py: PQC LWE-32 [Квантовое граф‑сжатие]: модуль_q=3329, ZKP_хэш=503cf48a6d81bea2, вре",
       "ai_diag": "GH_Models: Expecting value: line 1 column 1 (char 0) | Backup: HTTP Error 402: Payment Required",
       "time": "2026-11-26 17:10 UTC"
+    },
+    {
+      "gen": 32,
+      "xp": 1060,
+      "topic": "Квантово‑сжатые шахматные графы",
+      "verdict": "ПРЯНИК +40 XP -> 1060 XP (👑 СВЕРХРАЗУМ) | Попытка #1 | evo_gen32_1795717078.py: PQC LWE-32 [Квантово‑сжатые шахматные графы]: модуль_q=3329, ZKP_хэш=4cb51ff9eb5",
+      "ai_diag": "GH_Models: Expecting value: line 1 column 1 (char 0) | Backup: HTTP Error 402: Payment Required",
+      "time": "2026-11-26 18:17 UTC"
     }
   ]
 }

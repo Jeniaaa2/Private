@@ -11,3 +11,7 @@
 - [Wiki RU] Квантовая точка: Ква́нтовая то́чка (КТ, нанокристал, искусственный атом) — фрагмент проводника или полупроводника (например InGaAs, CdSe, CdS или GaInP/InP), носители заряда (электроны или дырки) которого ограничены в пространстве по всем трём измерениям. Размер квантовой точки должен быть настолько мал, чтоб
 - [Wiki EN] List of algorithms: An algorithm is a fundamental set of rules or defined procedures that are typically designed and used to be a simpler way to solve a specific problem or a broad set of problems. Simply speaking, algorithms define different processes, sets of rules and regulations, or methodologies that are
 
+## Gen #32 — Квантово‑сжатые шахматные графы (2026-11-26 18:17 UTC)
+- [Wiki RU] Шеннон, Клод: Claude Elwood Shannon; 30 апреля 1916, Петоски, Мичиган, США — 24 февраля 2001, Медфорд, Массачусетс, США) — американский инженер, криптоаналитик и математик. Считается «отцом информационного века»
+- [Wiki EN] List of women in mathematics: This is a list of women who have made noteworthy contributions to or achievements in mathematics. These include mathematical research, mathematics education, the history and philosophy of mathematics, public outreach, and mathematics contests.
+
