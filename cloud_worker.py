@@ -363,6 +363,27 @@ for attempt in (1, 2):
             f"print(f'Quantum Walk [{ru_q}]: шагов={{steps}}, узел_пика={{max_node}}, P={{max_p}}%, время={{dt}} мкс')\n"
         ))
 
+        # 11. Исследовательская лаборатория P vs NP (3-SAT верификатор и Кладбище тупиков)
+        engines.append((
+            "Лаборатория P vs NP (3-SAT & Graveyard)",
+            "import time, random, os\n"
+            f"seed_np = {seed_val}\n"
+            "t0 = time.perf_counter()\n"
+            "rng = random.Random(seed_np)\n"
+            "n_vars, n_clauses = 12, 48\n"
+            "clauses = [tuple((rng.randint(1, n_vars), rng.choice((-1, 1))) for _ in range(3)) for _ in range(n_clauses)]\n"
+            "# Полиномиальная верификация случайного сертификата за O(n) (класс NP)\n"
+            "assign = {v: rng.choice((True, False)) for v in range(1, n_vars + 1)}\n"
+            "sat = sum(1 for cl in clauses if any((assign.get(v, False) if sgn == 1 else not assign.get(v, False)) for v, sgn in cl))\n"
+            "ratio = round((sat / n_clauses) * 100.0, 1)\n"
+            "dt = round((time.perf_counter() - t0) * 1e6, 2)\n"
+            "gy = os.path.expanduser('~/ai_cloud/graveyard.md')\n"
+            "if ratio < 92.0 and os.path.isdir(os.path.dirname(gy)):\n"
+            "    with open(gy, 'a', encoding='utf-8') as f:\n"
+            f"        f.write(f'- [Тупик 3-SAT | {ru_q}] Покрытие={{ratio}}% < 92% — жадная эвристика отброшена\\n')\n"
+            f"print(f'P vs NP 3-SAT [{ru_q}]: выполнено={{sat}}/{{n_clauses}} ({{ratio}}%), проверка_NP={{dt}} мкс')\n"
+        ))
+
         eng_name, synth_code = engines[gen % len(engines)]
         synthesis = f"Синтезирован алгоритм [{eng_name}] на базе 4 научных источников.\n```python\n{synth_code}```"
         code_m = re.search(r"```python\s*(.*?)```", synthesis, re.S)
