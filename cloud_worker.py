@@ -32,6 +32,7 @@ def ask_cloud_ai(prompt, max_tok=450):
                 return g_txt
         except Exception as ge:
             LAST_AI_ERR = f"Gemini: {ge}"
+    return _backup_ask_ai(prompt, max_tok) or ""
 
 def _backup_ask_ai(prompt, max_tok=450):
     global LAST_AI_ERR
@@ -159,7 +160,8 @@ goal_raw = ask_cloud_ai(
     max_tok=90
 )
 
-m_ru = re.search(r"ТЕМА_RU:\s*([^|\n]+)", goal_raw)
+goal_raw = goal_raw or ""
+    m_ru = re.search(r"ТЕМА_RU:\s*([^|\n]+)", goal_raw)
 m_en = re.search(r"ТЕМА_EN:\s*([^|\n]+)", goal_raw)
 ru_q = m_ru.group(1).strip() if m_ru else random.choice(["Монте-Карло поиск в дереве", "Энтропийное кодирование", "Алгоритм Дейкстры с эвристикой", "Обучение с подкреплением"])
 en_q = m_en.group(1).strip() if m_en else "Monte Carlo tree search"
