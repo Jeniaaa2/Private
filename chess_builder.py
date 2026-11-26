@@ -4,6 +4,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(BASE, "chess_arena.html")
 
 def build_chess(gen=27, xp=860):
+    import json
+    w_file = os.path.join(BASE, "chess_weights.json")
+    w = {"elo": 1500, "games": 0, "knight": 320, "bishop": 330, "center": 4.2}
+    if os.path.exists(w_file):
+        try: w.update(json.loads(open(w_file, encoding="utf-8").read()))
+        except Exception: pass
+
     html = f"""<!DOCTYPE html>
 <html lang="ru"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
@@ -32,7 +39,7 @@ td.hint{{box-shadow:inset 0 0 0 4px #0ea5e9;background:#bae6fd!important}}
 <option value="3" selected>Тактик (гл. 3)</option>
 <option value="4">Гроссмейстер (гл. 4)</option>
 </select>
-<button onclick="init()">🔄 Заново</button>
+<select id="sd" onchange="init()"><option value="w">⚪ Белые</option><option value="b">⚫ Чёрные</option></select><button id="spb" onclick="sp=!sp;this.innerText=sp?'⏹ Стоп':'🤖 ИИ vs ИИ';if(sp)ai()">🤖 ИИ vs ИИ</button><button onclick="init()">🔄 Заново</button>
 <button onclick="undo()">↩️ Назад</button>
 </div>
 <div class="cap" id="capB"></div>
@@ -44,10 +51,10 @@ td.hint{{box-shadow:inset 0 0 0 4px #0ea5e9;background:#bae6fd!important}}
 </div>
 <table class="b" id="b"></table>
 <div class="cap" id="capW"></div>
-<div class="st"><div id="st">Ваш ход (Белые). Нажмите или перетащите фигуру.</div><div class="th" id="th">Движок: Alpha-Beta + MVV-LVA + Позиционные таблицы</div></div>
+<div class="st"><div id="st">Ваш ход (Белые). Нажмите или перетащите фигуру.</div><div class="th" id="th">Elo ИИ: {w['elo']} • Облачных партий: {w['games']}</div></div>
 <script>
 const P={{K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
-const V={{p:100,n:320,b:330,r:500,q:900,k:20000}};
+let V={{p:100,n:{w['knight']},b:{w['bishop']},r:500,q:900,k:20000}},cW={w['center']},elo={w['elo']},gms={w['games']},sp=false,ep=null;
 const PST_P='0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0'.split(',').map(Number);
 const PST_N='-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50'.split(',').map(Number);
 const PST_K='-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,10,0,0,10,30,20'.split(',').map(Number);
@@ -74,8 +81,8 @@ for(let r=0;r<8;r++)for(let c=0;c<8;c++){{
 let p=b[r][c];if(!p||(s=='w'&&!isW(p))||(s=='b'&&!isB(p)))continue;
 let t=p.toLowerCase(),d=s=='w'?-1:1,sr=s=='w'?6:1;
 if(t=='p'){{
-if(r+d>=0&&r+d<8&&!b[r+d][c]){{m.push({{fr:r,fc:c,tr:r+d,tc:c}});if(r==sr&&!b[r+2*d][c])m.push({{fr:r,fc:c,tr:r+2*d,tc:c}});}}
-for(let dc of[-1,1])if(r+d>=0&&r+d<8&&c+dc>=0&&c+dc<8){{let x=b[r+d][c+dc];if(x&&(s=='w'?isB(x):isW(x)))m.push({{fr:r,fc:c,tr:r+d,tc:c+dc}});}}
+if(r+d>=0&&r+d<8&&!b[r+d][c]){{m.push({{fr:r,fc:c,tr:r+d,tc:c}});if(r==sr&&!b[r+2*d][c])m.push({{fr:r,fc:c,tr:r+2*d,tc:c,ep:(r+d)+','+c}});}}
+for(let dc of[-1,1])if(r+d>=0&&r+d<8&&c+dc>=0&&c+dc<8){{let x=b[r+d][c+dc];if(x&&(s=='w'?isB(x):isW(x)))m.push({{fr:r,fc:c,tr:r+d,tc:c+dc}});else if(ep==(r+d)+','+(c+dc))m.push({{fr:r,fc:c,tr:r+d,tc:c+dc,epc:1}});}}
 }}else if(t=='n'){{
 let kd='-2,-1,-2,1,-1,-2,-1,2,1,-2,1,2,2,-1,2,1'.split(',').map(Number);
 for(let i=0;i<16;i+=2){{let nr=r+kd[i],nc=c+kd[i+1];if(nr>=0&&nr<8&&nc>=0&&nc<8){{let x=b[nr][nc];if(!x||(s=='w'?isB(x):isW(x)))m.push({{fr:r,fc:c,tr:nr,tc:nc}});}}}}
@@ -90,7 +97,7 @@ if(t=='b'||t=='q'){{addSlide(b,s,r,c,-1,-1,m);addSlide(b,s,r,c,-1,1,m);addSlide(
 }}
 function mv(b,m,pr){{
 let n=b.map(r=>r.slice()),p=n[m.fr][m.fc];
-n[m.tr][m.tc]=p;n[m.fr][m.fc]='';
+n[m.tr][m.tc]=p;n[m.fr][m.fc]='';if(m.epc)n[m.fr][m.tc]='';
 if(m.castle=='K'){{n[7][5]='R';n[7][7]='';}}
 if(m.castle=='k'){{n[0][5]='r';n[0][7]='';}}
 if(p=='P'&&m.tr==0)n[m.tr][m.tc]=pr||'Q';
@@ -154,8 +161,8 @@ document.getElementById('capW').innerText='ИИ срубил: '+start.filter(isW
 }}
 function draw(){{
 const e=document.getElementById('b');e.innerHTML='';
-for(let r=0;r<8;r++){{let tr=document.createElement('tr');
-for(let c=0;c<8;c++){{let td=document.createElement('td');td.className=(r+c)%2?'d':'l';
+let fl=(document.getElementById('sd')?.value=='b');for(let ri=0;ri<8;ri++){{let r=fl?7-ri:ri,tr=document.createElement('tr');
+for(let ci=0;ci<8;ci++){{let c=fl?7-ci:ci,td=document.createElement('td');td.className=(r+c)%2?'d':'l';
 if(S&&S.r==r&&S.c==c)td.classList.add('sel');
 if(LM&&((LM.fr==r&&LM.fc==c)||(LM.tr==r&&LM.tc==c)))td.classList.add('last');
 if(M.some(m=>m.tr==r&&m.tc==c))td.classList.add('hint');
