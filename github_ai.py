@@ -52,7 +52,7 @@ def ask_github_ai(topic, intel):
                 hdrs["Authorization"] = f"Bearer {tok}"
             body = json.dumps({"model": mdl, "messages": [{"role": "user", "content": prompt}]}).encode()
             res = json.loads(ur.urlopen(ur.Request(url, data=body, headers=hdrs), timeout=35).read().decode())
-            ans = res["choices"]["message"]["content"].strip()
+            ans = next(iter(res.get("choices", ()))).get("message", {}).get("content", "").strip()
             if ans:
                 src_name = label
                 break
