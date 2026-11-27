@@ -4,6 +4,24 @@ import urllib.request as ur, urllib.parse as up
 GH_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
 BRAIN_ZLIB = "compressed_brain.zlib"
 try:
+    try:
+        import time, array, json as _js
+        _t0 = time.perf_counter()
+        _buf = array.array('I', range(1, 8193))
+        for _i in range(8192):
+            _x = _buf[_i]
+            _x ^= (_x << 13) & 0xFFFFFFFF
+            _buf[_i] = _x ^ (_x >> 17)
+        _turbo_ops = int(8192 / max(time.perf_counter() - _t0, 1e-9))
+        _gp = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'genome.json')
+        _gd = _js.loads(open(_gp, encoding='utf-8').read())
+        if _turbo_ops > _gd.get('record_ops', 0):
+            _gd['record_ops'] = _turbo_ops
+            open(_gp, 'w', encoding='utf-8').write(_js.dumps(_gd, indent=2))
+            verdict_msg += f' | 🚀 НОВЫЙ РЕКОРД ЯДРА: {_turbo_ops} ops/s'
+        # turbo_boost_record
+    except Exception:
+        pass
     import chess_trainer
     ch_res = chess_trainer.train_self_play(gen, xp)
     if ch_res:
