@@ -76,3 +76,7 @@ def transform(text: str) -> str:
 - [Wiki RU] Искусственный интеллект: artificial intelligence; AI), также ИИ, искусственный ра́зум, в самом широком смысле — научно-технологическая область, занимающаяся изучением и созданием интеллектуальных сущностей (англ. intelligent entities), способных «вычислять, как им действовать эффективно и безопасно в самых ра
 - [Wiki EN] Solving chess: Solving chess consists of finding an optimal strategy for the game of chess; that is, one by which one of the players (White or Black) can always force either a victory or a draw (see solved game). It is also related to more generally solving chess-like games (i.e
 
+## Gen #40 — Нейроморфный поиск деревьев (2026-11-27 03:57 UTC)
+- [Wiki RU] Импульсная нейронная сеть: Импульсная нейронная сеть (ИмНС, англ. Pulsed neural networks, PNN) или Спайковая нейронная сеть (СНН, англ
+- [Wiki EN] Decision tree learning: Decision tree learning is a supervised learning approach used in statistics, data mining and machine learning. In this formalism, a classification or regression decision tree is used as a predictive model to draw conclusions about a set of observations
+
