@@ -1,3 +1,4 @@
+CHESS_ENABLED = False  # Переключатель шахмат (True = вкл, False = выкл)
 import os, re, json, time, random, zlib, gzip, subprocess, concurrent.futures
 import urllib.request as ur, urllib.parse as up
 
