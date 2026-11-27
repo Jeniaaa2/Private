@@ -562,7 +562,8 @@ try:
         _res = _ct.train_self_play(_ld.get("gen", 44))
     else:
         import github_ai as _ga
-        _res = "⚡ Режим Ядро+Наука:" + _ga.evolve_numeric_plugin(_ld.get("history", [{}])[-1].get("topic", "Core"))
+        import c_forge as _cf
+        _res = "⚡ Режим Ядро+Наука:" + _ga.evolve_numeric_plugin(_ld.get("history", [{}])[-1].get("topic", "Core")) + _cf.forge_and_bench(_ld.get("gen", 56))
     if _ld.get("history"):
         _ld["history"][-1]["verdict"] += _rec_note + f" | {_deb}" + (f" | {_res}" if _res else "")
         open(_lp, "w", encoding="utf-8").write(_j.dumps(_ld, ensure_ascii=False, indent=2))
