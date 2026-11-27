@@ -194,3 +194,7 @@ def transform(text: str) -> str:
     """Нормализует пробелы в тексте."""
     return " ".join(text.split())
 ```
+## Gen #48 — Иерархическое кодирование позиций (2026-11-27 14:20 UTC)
+- [Wiki RU] Общероссийский классификатор объектов административно-территориального деления: Общеросси́йский классифика́тор объе́ктов администрати́вно-территориа́льного деле́ния ОК 019-95 (сокр. Russian Classification of objects of administrative division) — один из двух классификаторов в сфере территориального устройства
+- [Wiki EN] Geocode: A geocode or geographic identifier (sometimes shortened as geo ID) is a code or unique identifier that represents a geographic entity (location or object), as distinguished from other entities in the same geocode system. In general, a geocode is a human-readable and short identifier
+
