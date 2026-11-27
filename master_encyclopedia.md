@@ -301,3 +301,6 @@ def transform(text: str) -> str:
     """Нормализует пробелы и возвращает текст с заглавной первой буквой."""
     return " ".join(text.split()).capitalize()
 ```
+## Gen #56 — Эндшпильные базы сжатия (2026-11-27 21:55 UTC)
+- [Wiki EN] Endgame tablebase: In chess, an endgame tablebase, or simply tablebase, is a computerised database containing precalculated evaluations of endgame positions. Tablebases are used by players and chess engines to analyze games and positions
+
