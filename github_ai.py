@@ -41,6 +41,57 @@ def transform(text: str) -> str:
         return f" | 🏆 Evo-Code: новый плагин-чемпион {pname} (балл={cand_score} > {best_score})"
     return f" | 🛡️ Evo-Code: плагин проверен (балл={cand_score}, лидер={best_score})"
 
+
+def _bench_math_plugin(fn_obj):
+    import array as _ar
+    arr = _ar.array('I', range(1, 4097))
+    t0 = time.perf_counter()
+    for _ in range(50):
+        res = fn_obj(arr)
+    dt = time.perf_counter() - t0
+    if not isinstance(res, int) or res == 0 or dt > 0.15:
+        return -1.0
+    return round((4096 * 50) / max(dt, 1e-6), 1)
+
+def evolve_numeric_plugin(topic):
+    base = os.path.dirname(os.path.abspath(__file__))
+    pdir = os.path.join(base, "ai_core_modules", "auto_plugins")
+    os.makedirs(pdir, exist_ok=True)
+    best_m = 0.0
+    for fn in sorted([f for f in os.listdir(pdir) if f.startswith("math_") and f.endswith(".py")]):
+        try:
+            ns = {}
+            exec(open(os.path.join(pdir, fn), encoding="utf-8").read(), ns)
+            if "fast_math" in ns:
+                sc = _bench_math_plugin(ns["fast_math"])
+                if sc > best_m:
+                    best_m = sc
+        except Exception:
+            pass
+
+    shift_a = random.choice((5, 7, 11, 13))
+    shift_b = random.choice((3, 9, 15, 17))
+    mult_c = random.choice((2654435761, 2246822519, 3266489917))
+    code = (
+        "def fast_math(arr):\n"
+        "    mv = memoryview(arr).cast('B').cast('Q')\n"
+        "    acc = 0x9E3779B97F4A7C15\n"
+        f"    for w in mv:\n"
+        f"        acc ^= ((w << {shift_a}) ^ (w >> {shift_b})) * {mult_c} & 0xFFFFFFFFFFFFFFFF\n"
+        "    return int(acc & 0xFFFFFFFF)\n"
+    )
+    ns = {}
+    exec(code, ns)
+    cand_m = _bench_math_plugin(ns["fast_math"])
+    if cand_m > best_m and cand_m > 0:
+        pname = f"math_champ_{int(cand_m // 1000)}k_{int(time.time())}.py"
+        open(os.path.join(pdir, pname), "w", encoding="utf-8").write(code)
+        all_m = sorted([f for f in os.listdir(pdir) if f.startswith("math_") and f.endswith(".py")])
+        for old_m in all_m[:-3]:
+            os.remove(os.path.join(pdir, old_m))
+        return f" | 🧮 Числовой плагин {pname} принят ({int(cand_m):,} ops/s)"
+    return f" | 🧮 Числовой лидер устоял ({int(best_m):,} ops/s)"
+
 def ask_github_ai(topic, intel):
     base = os.path.dirname(os.path.abspath(__file__))
     pdir = os.path.join(base, "ai_core_modules", "auto_plugins")
@@ -105,6 +156,6 @@ def ask_github_ai(topic, intel):
                     return f" | 🏆 {src_name}: новый плагин {pname} (балл={cand_score})"
             except Exception:
                 pass
-        return f" | 🧠 {src_name}: разбор записан (лидер={best_score})"
+        return f" | 🧠 {src_name}: разбор записан (лидер={best_score})" + evolve_numeric_plugin(topic)
 
-    return _evolve_local_plugin(topic, intel, best_score, pdir)
+    return _evolve_local_plugin(topic, intel, best_score, pdir) + evolve_numeric_plugin(topic)
