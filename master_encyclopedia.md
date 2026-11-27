@@ -168,3 +168,17 @@ def transform(text: str) -> str:
 - [Wiki RU] Алгоритм Гаусса — Ньютона: Алгоритм Гаусса — Ньютона используется для решения задач нелинейным методом наименьших квадратов. Алгоритм является модификацией метода Ньютона для нахождения минимума функции
 - [Wiki EN] Sparse matrix: In numerical analysis and scientific computing, a sparse matrix or sparse array is a matrix in which most of the elements are zero. There is no strict definition regarding the proportion of zero-value elements for a matrix to qualify as sparse but a common criterion is that the number of non-ze
 
+
+### [OpenAI-Free Глубокий разбор: Оптимизация битбордов]
+**Научный вывод:** Битборды позволяют представлять состояние доски одним 64-битным числом и выполнять многие операции над фигурами с помощью быстрых побитовых инструкций. Предварительно вычисленные маски и таблицы могут ускорить генерацию ходов, но увеличивают расход памяти и сложность кода. Поэтому оптимизацию следует оценивать профилированием на целевой платформе, а не только по числу операций.
+
+Ниже `transform` принимает битборд в десятичной или `0x`-шестнадцатеричной записи и возвращает нормализованную шестнадцатеричную форму:
+
+```python
+def transform(text: str) -> str:
+    """Нормализует 64-битный битборд в шестнадцатеричную запись."""
+    value = int(text.strip(), 0)
+    if not 0 <= value < (1 << 64):
+        raise ValueError("Значение должно быть беззнаковым 64-битным числом")
+    return f"0x{value:016x}"
+```

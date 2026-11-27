@@ -27,7 +27,7 @@ def transform(text: str) -> str:
     words = [w for w in _RX.sub('', text.lower()).split() if len(w) > 3 and w not in _STOP]
     top_terms = [w for w, _ in Counter(words).most_common({top_n})]
     summary = ' '.join(text.split()[:{sum_w}])
-    return f"Ключевые термины: {', '.join(top_terms)}. Сводка: {summary}"
+    return "Ключевые термины: " + ", ".join(top_terms) + ". Сводка: " + summary
 """
     ns = {}
     exec(code, ns)
