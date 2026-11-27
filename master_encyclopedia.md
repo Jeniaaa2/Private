@@ -68,3 +68,7 @@ def transform(text: str) -> str:
 ## Gen #37 — Шахматные графовые S-box (2026-11-26 23:53 UTC)
 - [Wiki EN] Algebraic notation (chess): Algebraic notation is the standard method of chess notation, used for recording and describing moves. It is based on a system of coordinates to uniquely identify each square on the board
 
+## Gen #38 — Поиск циклов в графах (2026-11-27 01:12 UTC)
+- [Wiki RU] Цикл (теория графов): В теории графов два типа объектов обычно называются циклами. Один тип циклов, чаще называющиеся замкнутым обходом, состоит из последовательности вершин, начинающейся и заканчивающейся в той же самой вершине, и каждые две последовательные вершины в последовательности смежны
+- [Wiki EN] Cycle (graph theory): In graph theory, a cycle in a graph is a non-empty trail in which only the first and last vertices are equal. A directed cycle in a directed graph is a non-empty directed trail in which only the first and last vertices are equal
+
