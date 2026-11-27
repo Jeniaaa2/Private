@@ -308,3 +308,6 @@ def transform(text: str) -> str:
 - [Wiki RU] Открытые математические проблемы: Откры́тые (нерешённые) математи́ческие пробле́мы — задачи, которые рассматривались математиками, но до сих пор не решены. Часто имеют форму гипотез, которые предположительно верны, но нуждаются в доказательстве
 - [Wiki EN] Hierarchical navigable small world: Hierarchical navigable small world (HNSW) is an algorithm for approximate nearest neighbor search. It is used to find items that are similar to a query item in a large collection, without comparing the query with every item one by one
 
+## Gen #58 — Миниакс с отсечением доминируемых ходов (2026-11-27 23:51 UTC)
+- [Wiki EN] Minimax: Minimax (sometimes Minmax, MM or saddle point) is a decision rule used in artificial intelligence, decision theory, combinatorial game theory, statistics, and philosophy for minimizing the possible loss for a worst case (maximum loss) scenario. When dealing with gains, it is referred to as "maximin" 
+
