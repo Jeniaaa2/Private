@@ -160,3 +160,7 @@ def transform(text: str) -> str:
 - [Wiki RU] Поисковый индекс: Поиско́вый и́ндекс — структура данных, которая содержит информацию о документах и используется в поисковых системах. Индекси́рование, совершаемое поисковой машиной, — процесс сбора, сортировки и хранения данных с целью обеспечить быстрый и точный поиск информации
 - [Wiki EN] Perfect hash function: In computer science, a perfect hash function h for a set S is a hash function that maps distinct elements in S to a set of m integers, with no collisions. In mathematical terms, it is an injective function
 
+## Gen #45 — Блум-фильтр транспозиций (2026-11-27 10:30 UTC)
+- [Wiki RU] Хронология биотехнологии: Хроноло́гия биотехноло́гии — хронологический список общепризнанных в мировом научном сообществе знаковых открытий, которые привели к появлению и становлению биотехнологии в качестве современной науки и составляют основу для её дальнейшего развития. «<…> рассмотрение основных представ
+- [Wiki EN] Sea lamprey: The sea lamprey (Petromyzon marinus) is a parasitic lamprey native to the Northern Hemisphere. It is sometimes referred to as the "vampire fish"
+
