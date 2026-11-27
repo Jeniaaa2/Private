@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>Шахматы NNUE Gen #49</title><style>
+<title>Шахматы NNUE Gen #50</title><style>
 body{margin:0;background:#0b1120;color:#f8fafc;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;padding:8px;touch-action:none}
 h2{margin:4px 0;font-size:16px;color:#38bdf8}
 .bar{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap;justify-content:center}
@@ -16,7 +16,7 @@ td.hint{box-shadow:inset 0 0 0 4px #0ea5e9;background:#bae6fd!important}
 .st{margin-top:8px;background:#1e293b;padding:8px 12px;border-radius:10px;font-size:14px;text-align:center;min-width:340px}
 .th{font-size:11px;color:#38bdf8;margin-top:3px}
 </style></head><body>
-<h2>♟️ Шахматы NNUE-PVS (Gen #49 • 1740 XP)</h2>
+<h2>♟️ Шахматы NNUE-PVS (Gen #50 • 1780 XP)</h2>
 <div class="bar">
 <select id="lv"><option value="3">Клубный (гл. 3)</option><option value="4" selected>Мастер 2200+ (гл. 4)</option><option value="5">Гроссмейстер MAX (гл. 5)</option></select>
 <select id="sd" onchange="init()"><option value="w">⚪ Белые</option><option value="b">⚫ Чёрные</option></select>
@@ -25,7 +25,7 @@ td.hint{box-shadow:inset 0 0 0 4px #0ea5e9;background:#bae6fd!important}
 <div class="cap" id="capB"></div>
 <div class="promo" id="promo">В фигуру: <button onclick="pickPromo('Q')">♕</button><button onclick="pickPromo('R')">♖</button><button onclick="pickPromo('B')">♗</button><button onclick="pickPromo('N')">♘</button></div>
 <table class="b" id="b"></table><div class="cap" id="capW"></div>
-<div class="st"><div id="st">Ваш ход (Белые)</div><div class="th" id="th">Elo ИИ: 2024 • Партий: 108 • O-O-O + NNUE</div></div>
+<div class="st"><div id="st">Ваш ход (Белые)</div><div class="th" id="th">Elo ИИ: 2132 • Партий: 132 • Дебют + Тактика + Эндшпиль</div></div>
 <script>
 const P={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
 let V={p:100,n:320,b:355,r:500,q:920,k:20000},ep=null;
@@ -37,11 +37,47 @@ r:[0,0,0,5,5,0,0,0,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,
 k:[-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,32,12,0,0,12,32,20],
 q:[-20,-10,-10,-5,-5,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,5,5,5,0,-10,-5,0,5,5,5,5,0,-5,0,0,5,5,5,5,0,-5,-10,5,5,5,5,5,0,-10,-10,0,5,0,0,0,0,-10,-20,-10,-10,-5,-5,-10,-10,-20]
 };
+
+const BOOK={
+'e2e4':['c7c5','e7e5','e7e6','c7c6'],
+'d2d4':['g8f6','d7d5','e7e6'],
+'c2c4':['e7e5','g8f6','c7c5'],
+'g1f3':['d7d5','g8f6','c7c5'],
+'e2e4 c7c5 g1f3':['d7d6','b8c6','e7e6'],
+'e2e4 e7e5 g1f3':['b8c6','g8f6'],
+'e2e4 e7e5 g1f3 b8c6 f1b5':['a7a6','g8f6'],
+'e2e4 e7e6 d2d4':['d7d5'],
+'e2e4 c7c6 d2d4':['d7d5'],
+'d2d4 d7d5 c2c4':['e7e6','c7c6'],
+'d2d4 g8f6 c2c4':['e7e6','g7g6']
+};
+let HIST_U=[];
+function mToUci(m){return String.fromCharCode(97+m.fc)+(8-m.fr)+String.fromCharCode(97+m.tc)+(8-m.tr);}
+function uciToM(u,ms){return ms.find(m=>mToUci(m)===u);}
+function isEndgame(b){
+let maj=0;for(let r=0;r<8;r++)for(let c=0;c<8;c++){let t=b[r][c].toLowerCase();if(t=='q'||t=='r'||t=='b'||t=='n')maj++;}
+return maj<=5;
+}
+function endgameBonus(b){
+let wk=null,bk=null,sc=0;
+for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+if(b[r][c]=='K')wk={r,c};if(b[r][c]=='k')bk={r,c};
+if(b[r][c]=='p'&&r>=4)sc+=(r-3)*22;
+if(b[r][c]=='P'&&r<=3)sc-=(4-r)*22;
+}
+if(wk&&bk){
+let dist=Math.abs(wk.r-bk.r)+Math.abs(wk.c-bk.c);
+let edge=Math.abs(3.5-wk.r)+Math.abs(3.5-wk.c);
+sc+=Math.round(edge*14+(14-dist)*6);
+}
+return sc;
+}
+
 let B=[],T='w',S=null,M=[],H=[],LM=null,N=0,pendPromo=null,CR={K:1,Q:1,k:1,q:1},TT=new Map();
 function init(){
 let rows=['rnbqkbnr','pppppppp','........','........','........','........','PPPPPPPP','RNBQKBNR'];
 B=rows.map(r=>r.split('').map(c=>c=='.'?'':c));
-T='w';S=null;M=[];H=[];LM=null;pendPromo=null;ep=null;CR={K:1,Q:1,k:1,q:1};TT.clear();
+T='w';S=null;M=[];H=[];LM=null;pendPromo=null;ep=null;CR={K:1,Q:1,k:1,q:1};TT.clear();HIST_U=[];
 document.getElementById('promo').style.display='none';document.getElementById('st').innerText='Ваш ход (Белые)';draw();
 }
 const isW=p=>p&&p===p.toUpperCase(),isB=p=>p&&p===p.toLowerCase();
@@ -112,7 +148,7 @@ let p=b[r][c];if(!p)continue;if(p=='B')wb++;if(p=='b')bb++;
 let t=p.toLowerCase(),idx=isW(p)?(r*8+c):((7-r)*8+c);
 let v=(V[t]||0)+(PST[t]?PST[t][idx]:0);s+=isB(p)?v:-v;
 }
-if(bb>=2)s+=35;if(wb>=2)s-=35;return s;
+if(bb>=2)s+=35;if(wb>=2)s-=35;if(isEndgame(b))s+=endgameBonus(b);return s;
 }
 function moveScore(b,m){
 let sc=0,vic=b[m.tr][m.tc],att=b[m.fr][m.fc];
@@ -145,24 +181,32 @@ if(TT.size<30000)TT.set(key,{d,v:bestV,f:bestV<=origA?2:(bestV>=bt?1:0)});return
 function ai(){
 let maxD=+document.getElementById('lv').value,ms=orderMoves(B,lm(B,'b',CR));
 if(!ms.length){document.getElementById('st').innerText=chk(B,'b')?'🏆 ВЫ ПОБЕДИЛИ! Мат ИИ!':'🤝 Ничья (Пат)';return;}
+let keyU=HIST_U.join(' '),bOpts=BOOK[keyU];
+if(bOpts&&bOpts.length){
+let pick=bOpts[Math.floor(Math.random()*bOpts.length)],bmBook=uciToM(pick,ms);
+if(bmBook){
+CR=nextCR(CR,B,bmBook);B=mv(B,bmBook);LM=bmBook;HIST_U.push(mToUci(bmBook));T='w';
+document.getElementById('st').innerText='Ваш ход (Белые)';
+document.getElementById('th').innerText='📖 Дебютная книга: '+pick+' (0 мс)';draw();return;
+}}
 N=0;let t0=performance.now(),bm=ms[0],bv=-1e9;
 for(let curD=2;curD<=maxD;curD++){
 let curBest=bm,curVal=-1e9;
 for(let m of ms){let v=ab(mv(B,m),curD-1,-1e9,1e9,0,nextCR(CR,B,m));if(v>curVal){curVal=v;curBest=m;}}
 bm=curBest;bv=curVal;ms=[bm,...ms.filter(x=>x!==bm)];if(performance.now()-t0>1500)break;
 }
-CR=nextCR(CR,B,bm);B=mv(B,bm);LM=bm;T='w';let pmw=lm(B,'w',CR);
+CR=nextCR(CR,B,bm);B=mv(B,bm);LM=bm;HIST_U.push(mToUci(bm));T='w';let pmw=lm(B,'w',CR);
 document.getElementById('st').innerText=!pmw.length?(chk(B,'w')?'💀 ИИ поставил вам мат!':'🤝 Ничья'):(chk(B,'w')?'⚠️ ШАХ! Ваш ход':'Ваш ход (Белые)');
 document.getElementById('th').innerText=`Позиций: ${N} • ${Math.round(performance.now()-t0)} мс • Оценка: ${(bv/100).toFixed(2)}`;draw();
 }
-function execPlayerMove(f,pr){H.push({b:B.map(x=>x.slice()),cr:{...CR}});CR=nextCR(CR,B,f);B=mv(B,f,pr);LM=f;S=null;M=[];T='b';document.getElementById('st').innerText='🤔 ИИ считает (NNUE+PVS)...';draw();setTimeout(ai,30);}
+function execPlayerMove(f,pr){H.push({b:B.map(x=>x.slice()),cr:{...CR}});CR=nextCR(CR,B,f);B=mv(B,f,pr);LM=f;HIST_U.push(mToUci(f));S=null;M=[];T='b';document.getElementById('st').innerText='🤔 ИИ считает (NNUE+PVS)...';draw();setTimeout(ai,30);}
 function pickPromo(pc){document.getElementById('promo').style.display='none';if(pendPromo){let m=pendPromo;pendPromo=null;execPlayerMove(m,pc);}}
 function tap(r,c){
 if(T!='w'||pendPromo)return;let f=M.find(m=>m.tr==r&&m.tc==c);
 if(f){if(B[f.fr][f.fc]=='P'&&f.tr==0){pendPromo=f;document.getElementById('promo').style.display='flex';return;}execPlayerMove(f,'Q');return;}
 if(isW(B[r][c])){S={r,c};M=lm(B,'w',CR).filter(m=>m.fr==r&&m.fc==c);}else{S=null;M=[];}draw();
 }
-function undo(){if(H.length&&T=='w'){let st=H.pop();B=st.b;CR=st.cr;S=null;M=[];LM=null;draw();}}
+function undo(){if(H.length&&T=='w'){let st=H.pop();B=st.b;CR=st.cr;HIST_U.splice(-2);S=null;M=[];LM=null;draw();}}
 function draw(){
 const e=document.getElementById('b');e.innerHTML='';let fl=(document.getElementById('sd')?.value=='b');
 for(let ri=0;ri<8;ri++){let r=fl?7-ri:ri,tr=document.createElement('tr');
