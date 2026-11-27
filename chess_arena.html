@@ -22,9 +22,9 @@ td.hint{box-shadow:inset 0 0 0 4px #0ea5e9;background:#bae6fd!important}
 <h2>♟️ Шахматы ИИ PRO (Gen #27 • 860 XP)</h2>
 <div class="bar">
 <select id="lv">
-<option value="2">Новичок (гл. 2)</option>
-<option value="3" selected>Тактик (гл. 3)</option>
-<option value="4">Гроссмейстер (гл. 4)</option>
+<option value="3">Клубный (гл. 3 + тактика)</option>
+<option value="4" selected>Мастер 2024+ (гл. 4 + форсир.)</option>
+<option value="5">Гроссмейстер MAX (гл. 5 + форсир.)</option>
 </select>
 <select id="sd" onchange="init()"><option value="w">⚪ Белые</option><option value="b">⚫ Чёрные</option></select><button id="spb" onclick="sp=!sp;this.innerText=sp?'⏹ Стоп':'🤖 ИИ vs ИИ';if(sp)ai()">🤖 ИИ vs ИИ</button><button onclick="init()">🔄 Заново</button>
 <button onclick="undo()">↩️ Назад</button>
@@ -38,18 +38,17 @@ td.hint{box-shadow:inset 0 0 0 4px #0ea5e9;background:#bae6fd!important}
 </div>
 <table class="b" id="b"></table>
 <div class="cap" id="capW"></div>
-<div class="st"><div id="st">Ваш ход (Белые). Нажмите или перетащите фигуру.</div><div class="th" id="th">Elo ИИ: 1560 • Облачных партий: 12</div></div>
+<div class="st"><div id="st">Ваш ход (Белые). Нажмите или перетащите фигуру.</div><div class="th" id="th">Elo ИИ: 2024 • Облачных партий: 108</div></div>
 <script>
 const P={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
-let V={p:100,n:320,b:348,r:500,q:900,k:20000},cW=5.69,elo=1560,gms=12,sp=false,ep=null;
+let V={p:100,n:320,b:355,r:500,q:900,k:20000},cW=9.48,elo=2024,gms=108,sp=false,ep=null;
 const PST_P='0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0'.split(',').map(Number);
 const PST_N='-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50'.split(',').map(Number);
-const PST_K='-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,10,0,0,10,30,20'.split(',').map(Number);
-let B=[],T='w',S=null,M=[],H=[],LM=null,N=0,pendPromo=null;
+const PST_K='-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,1let B=[],T='w',S=null,M=[],H=[],LM=null,N=0,pendPromo=null,CR={K:1,Q:1,k:1,q:1};
 function init(){
 let rows=['rnbqkbnr','pppppppp','........','........','........','........','PPPPPPPP','RNBQKBNR'];
 B=rows.map(r=>r.split('').map(c=>c=='.'?'':c));
-T='w';S=null;M=[];H=[];LM=null;pendPromo=null;
+T='w';S=null;M=[];H=[];LM=null;pendPromo=null;ep=null;CR={K:1,Q:1,k:1,q:1};
 document.getElementById('promo').style.display='none';
 document.getElementById('st').innerText='Ваш ход (Белые)';draw();
 }
@@ -62,7 +61,7 @@ if(!x)m.push({fr:r,fc:c,tr:nr,tc:nc});
 else{if(s=='w'?isB(x):isW(x))m.push({fr:r,fc:c,tr:nr,tc:nc});break;}
 nr+=dr;nc+=dc;
 }}
-function pm(b,s){
+function pm(b,s,cr=CR){
 let m=[];
 for(let r=0;r<8;r++)for(let c=0;c<8;c++){
 let p=b[r][c];if(!p||(s=='w'&&!isW(p))||(s=='b'&&!isB(p)))continue;
@@ -75,8 +74,14 @@ let kd='-2,-1,-2,1,-1,-2,-1,2,1,-2,1,2,2,-1,2,1'.split(',').map(Number);
 for(let i=0;i<16;i+=2){let nr=r+kd[i],nc=c+kd[i+1];if(nr>=0&&nr<8&&nc>=0&&nc<8){let x=b[nr][nc];if(!x||(s=='w'?isB(x):isW(x)))m.push({fr:r,fc:c,tr:nr,tc:nc});}}
 }else if(t=='k'){
 for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc){let nr=r+dr,nc=c+dc;if(nr>=0&&nr<8&&nc>=0&&nc<8){let x=b[nr][nc];if(!x||(s=='w'?isB(x):isW(x)))m.push({fr:r,fc:c,tr:nr,tc:nc});}}
-if(s=='w'&&r==7&&c==4&&!b[7][5]&&!b[7][6]&&b[7][7]=='R')m.push({fr:7,fc:4,tr:7,tc:6,castle:'K'});
-if(s=='b'&&r==0&&c==4&&!b[0][5]&&!b[0][6]&&b[0][7]=='r')m.push({fr:0,fc:4,tr:0,tc:6,castle:'k'});
+if(s=='w'&&r==7&&c==4){
+if(cr.K&&!b[7][5]&&!b[7][6]&&b[7][7]=='R')m.push({fr:7,fc:4,tr:7,tc:6,castle:'K'});
+if(cr.Q&&!b[7][3]&&!b[7][2]&&!b[7][1]&&b[7][0]=='R')m.push({fr:7,fc:4,tr:7,tc:2,castle:'Q'});
+}
+if(s=='b'&&r==0&&c==4){
+if(cr.k&&!b[0][5]&&!b[0][6]&&b[0][7]=='r')m.push({fr:0,fc:4,tr:0,tc:6,castle:'k'});
+if(cr.q&&!b[0][3]&&!b[0][2]&&!b[0][1]&&b[0][0]=='r')m.push({fr:0,fc:4,tr:0,tc:2,castle:'q'});
+}
 }else{
 if(t=='r'||t=='q'){addSlide(b,s,r,c,-1,0,m);addSlide(b,s,r,c,1,0,m);addSlide(b,s,r,c,0,-1,m);addSlide(b,s,r,c,0,1,m);}
 if(t=='b'||t=='q'){addSlide(b,s,r,c,-1,-1,m);addSlide(b,s,r,c,-1,1,m);addSlide(b,s,r,c,1,-1,m);addSlide(b,s,r,c,1,1,m);}
@@ -86,44 +91,98 @@ function mv(b,m,pr){
 let n=b.map(r=>r.slice()),p=n[m.fr][m.fc];
 n[m.tr][m.tc]=p;n[m.fr][m.fc]='';if(m.epc)n[m.fr][m.tc]='';
 if(m.castle=='K'){n[7][5]='R';n[7][7]='';}
+if(m.castle=='Q'){n[7][3]='R';n[7][0]='';}
 if(m.castle=='k'){n[0][5]='r';n[0][7]='';}
+if(m.castle=='q'){n[0][3]='r';n[0][0]='';}
 if(p=='P'&&m.tr==0)n[m.tr][m.tc]=pr||'Q';
 if(p=='p'&&m.tr==7)n[m.tr][m.tc]='q';
 return n;
 }
-function chk(b,s){let k=s=='w'?'K':'k',kr=-1,kc=-1;for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(b[r][c]==k){kr=r;kc=c;}return kr<0||pm(b,s=='w'?'b':'w').some(m=>m.tr==kr&&m.tc==kc);}
-const lm=(b,s)=>pm(b,s).filter(m=>{if(m.castle&&chk(b,s))return false;return !chk(mv(b,m),s);});
+function nextCR(cr,b,m){
+let c={...cr},p=b[m.fr][m.fc];
+if(p=='K'){c.K=0;c.Q=0;}if(p=='k'){c.k=0;c.q=0;}
+if((m.fr==7&&m.fc==7)||(m.tr==7&&m.tc==7))c.K=0;
+if((m.fr==7&&m.fc==0)||(m.tr==7&&m.tc==0))c.Q=0;
+if((m.fr==0&&m.fc==7)||(m.tr==0&&m.tc==7))c.k=0;
+if((m.fr==0&&m.fc==0)||(m.tr==0&&m.tc==0))c.q=0;
+return c;
+}
+function sqAtt(b,r,c,bySide){return pm(b,bySide,{K:0,Q:0,k:0,q:0}).some(m=>m.tr==r&&m.tc==c);}
+function chk(b,s){let k=s=='w'?'K':'k',kr=-1,kc=-1;for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(b[r][c]==k){kr=r;kc=c;}return kr<0||sqAtt(b,kr,kc,s=='w'?'b':'w');}
+const lm=(b,s,cr=CR)=>pm(b,s,cr).filter(m=>{
+if(m.castle){
+let opp=s=='w'?'b':'w',row=s=='w'?7:0,mid=(m.tc==6)?5:3;
+if(chk(b,s)||sqAtt(b,row,mid,opp))return false;
+}
+return !chk(mv(b,m),s);
+});
+const PST_B='-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,10,10,5,0,-10,-10,5,5,10,10,5,5,-10,-10,0,10,10,10,10,0,-10,-10,10,10,10,10,10,10,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20'.split(',').map(Number);
 function ev(b){
 let s=0;
 for(let r=0;r<8;r++)for(let c=0;c<8;c++){
 let p=b[r][c];if(!p)continue;
 let t=p.toLowerCase(),idx=isW(p)?(r*8+c):((7-r)*8+c);
-let pos=t=='p'?PST_P[idx]:(t=='n'?PST_N[idx]:(t=='k'?PST_K[idx]:(7-Math.abs(3.5-r)-Math.abs(3.5-c))*4));
+let pos=t=='p'?PST_P[idx]:(t=='n'?PST_N[idx]:(t=='b'?PST_B[idx]:(t=='k'?PST_K[idx]:(7-Math.abs(3.5-r)-Math.abs(3.5-c))*3)));
 let v=(V[t]||0)+pos;
 s+=isB(p)?v:-v;
 }return s;
 }
-function orderMoves(b,ms){
-return ms.sort((x,y)=>((V[b[y.tr][y.tc].toLowerCase()]||0)-(V[b[x.tr][x.tc].toLowerCase()]||0)));
+function moveScore(b,m){
+let sc=0,vic=b[m.tr][m.tc],att=b[m.fr][m.fc];
+if(vic)sc+=10*(V[vic.toLowerCase()]||0)-(V[att.toLowerCase()]||0);
+if(m.castle)sc+=65;
+if((att=='P'&&m.tr==0)||(att=='p'&&m.tr==7))sc+=800;
+return sc;
 }
-function ab(b,d,a,bt,mx){
-N++;let s=mx?'b':'w',ms=orderMoves(b,lm(b,s));
-if(!d||!ms.length)return !ms.length?(chk(b,s)?(mx?-99999-d:99999+d):0):ev(b);
-if(mx){let v=-1e9;for(let m of ms){v=Math.max(v,ab(mv(b,m),d-1,a,bt,0));a=Math.max(a,v);if(bt<=a)break;}return v;}
-else{let v=1e9;for(let m of ms){v=Math.min(v,ab(mv(b,m),d-1,a,bt,1));bt=Math.min(bt,v);if(bt<=a)break;}return v;}
+function orderMoves(b,ms){return ms.sort((x,y)=>moveScore(b,y)-moveScore(b,x));}
+function quiesce(b,a,bt,mx,qd){
+N++;let stand=ev(b);
+if(qd>=6)return stand;
+if(mx){
+if(stand>=bt)return bt;if(stand>a)a=stand;
+let caps=orderMoves(b,lm(b,'b',{K:0,Q:0,k:0,q:0}).filter(m=>b[m.tr][m.tc]||m.epc));
+for(let m of caps){let sc=quiesce(mv(b,m),a,bt,0,qd+1);if(sc>=bt)return bt;if(sc>a)a=sc;}
+return a;
+}else{
+if(stand<=a)return a;if(stand<bt)bt=stand;
+let caps=orderMoves(b,lm(b,'w',{K:0,Q:0,k:0,q:0}).filter(m=>b[m.tr][m.tc]||m.epc));
+for(let m of caps){let sc=quiesce(mv(b,m),a,bt,1,qd+1);if(sc<=a)return a;if(sc<bt)bt=sc;}
+return bt;
+}
+}
+function ab(b,d,a,bt,mx,cr){
+N++;let s=mx?'b':'w';
+if(d<=0)return quiesce(b,a,bt,mx,0);
+let ms=orderMoves(b,lm(b,s,cr));
+if(!ms.length)return chk(b,s)?(mx?-99999-d:99999+d):0;
+if(mx){let v=-1e9;for(let m of ms){v=Math.max(v,ab(mv(b,m),d-1,a,bt,0,nextCR(cr,b,m)));a=Math.max(a,v);if(bt<=a)break;}return v;}
+else{let v=1e9;for(let m of ms){v=Math.min(v,ab(mv(b,m),d-1,a,bt,1,nextCR(cr,b,m)));bt=Math.min(bt,v);if(bt<=a)break;}return v;}
 }
 function ai(){
-let d=+document.getElementById('lv').value,ms=orderMoves(B,lm(B,'b'));
+let maxD=+document.getElementById('lv').value,ms=orderMoves(B,lm(B,'b',CR));
 if(!ms.length){document.getElementById('st').innerText=chk(B,'b')?'🏆 ВЫ ПОБЕДИЛИ! Мат ИИ!':'🤝 Ничья (Пат)';return;}
-N=0;let t0=performance.now(),bm=ms,bv=-1e9;
-for(let m of ms){let v=ab(mv(B,m),d-1,-1e9,1e9,0);if(v>bv){bv=v;bm=m;}}
-B=mv(B,bm);LM=bm;T='w';let pmw=lm(B,'w');
+N=0;let t0=performance.now(),bm=ms[0],bv=-1e9;
+for(let curD=2;curD<=maxD;curD++){
+let curBest=bm,curVal=-1e9;
+for(let m of ms){
+let v=ab(mv(B,m),curD-1,-1e9,1e9,0,nextCR(CR,B,m));
+if(v>curVal){curVal=v;curBest=m;}
+}
+bm=curBest;bv=curVal;
+ms=[bm,...ms.filter(x=>x!==bm)];
+if(performance.now()-t0>1400)break;
+}
+CR=nextCR(CR,B,bm);B=mv(B,bm);LM=bm;T='w';let pmw=lm(B,'w',CR);
 document.getElementById('st').innerText=!pmw.length?(chk(B,'w')?'💀 ИИ поставил вам мат!':'🤝 Ничья'):(chk(B,'w')?'⚠️ ШАХ! Ваш ход':'Ваш ход (Белые)');
 document.getElementById('th').innerText=`Позиций: ${N} • ${Math.round(performance.now()-t0)} мс • Оценка: ${(bv/100).toFixed(2)}`;
 draw();
+if(sp&&pmw.length)setTimeout(ai,150);
+}
+: ${(bv/100).toFixed(2)}`;
+draw();
 }
 function execPlayerMove(f,pr){
-H.push(B.map(x=>x.slice()));B=mv(B,f,pr);LM=f;S=null;M=[];T='b';
+H.push({b:B.map(x=>x.slice()),cr:{...CR}});CR=nextCR(CR,B,f);B=mv(B,f,pr);LM=f;S=null;M=[];T='b';
 document.getElementById('st').innerText='🤔 ИИ просчитывает ответ...';draw();setTimeout(ai,40);
 }
 function pickPromo(pc){
@@ -139,7 +198,7 @@ execPlayerMove(f,'Q');return;
 }
 if(isW(B[r][c])){S={r,c};M=lm(B,'w').filter(m=>m.fr==r&&m.fc==c);}else{S=null;M=[];}draw();
 }
-function undo(){if(H.length&&T=='w'){B=H.pop();S=null;M=[];LM=null;draw();}}
+function undo(){if(H.length&&T=='w'){let st=H.pop();B=st.b;CR=st.cr;S=null;M=[];LM=null;draw();}}
 function updateCaps(){
 let start='ppppppppnnbbqqrrPPPPPPPPNNBBQQRR'.split(''),cur=B.flat().filter(Boolean);
 for(let x of cur){let i=start.indexOf(x);if(i>-1)start.splice(i,1);}
