@@ -22,8 +22,6 @@ try:
         # turbo_boost_record
     except Exception:
         pass
-    import chess_trainer
-    ch_res = chess_trainer.train_self_play(gen)
     if ch_res:
         verdict_msg += ' | ' + str(ch_res)
 except Exception:
@@ -520,3 +518,14 @@ try:
 except Exception:
     pass
 
+# Безусловный запуск шахматного тренера и нейросети в конце каждого поколения
+try:
+    import json as _j, chess_trainer as _ct
+    _lp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "evolution_log.json")
+    _ld = _j.loads(open(_lp, encoding="utf-8").read())
+    _res = _ct.train_self_play(_ld.get("gen", 44))
+    if _res and _ld.get("history"):
+        _ld["history"][-1]["verdict"] += " | " + str(_res)
+        open(_lp, "w", encoding="utf-8").write(_j.dumps(_ld, ensure_ascii=False, indent=2))
+except Exception:
+    pass
