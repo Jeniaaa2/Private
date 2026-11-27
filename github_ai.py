@@ -1,4 +1,4 @@
-import os, re, time, json, urllib.request as ur
+import os, re, time, json, random, urllib.request as ur
 
 def _bench_plugin(fn_obj):
     sample = "Quantum graph compression 3-SAT LWE-32 lattice cryptography evolutionary search algorithms 2026"
@@ -12,6 +12,34 @@ def _bench_plugin(fn_obj):
         return -1.0
     uniq = len(set(out.lower().split()))
     return round(uniq / max(dt, 1e-5), 1)
+
+def _evolve_local_plugin(topic, intel, best_score, pdir):
+    # Автономная эволюция кода плагина на основе лучших практик (precompiled regex + fast dict lookup)
+    top_n = random.choice((6, 7, 8))
+    sum_w = random.choice((30, 35, 40))
+    code = f"""import re
+from collections import Counter
+
+_RX = re.compile(r'[^\w\s]')
+_STOP = frozenset({"the","and","for","nor","but","a","an","of","in","on","to","from","by","with","that","this","is","are","как","для","или","при","что","это","без"})
+
+def transform(text: str) -> str:
+    words = [w for w in _RX.sub('', text.lower()).split() if len(w) > 3 and w not in _STOP]
+    top_terms = [w for w, _ in Counter(words).most_common({top_n})]
+    summary = ' '.join(text.split()[:{sum_w}])
+    return f"Ключевые термины: {', '.join(top_terms)}. Сводка: {summary}"
+"""
+    ns = {}
+    exec(code, ns)
+    cand_score = _bench_plugin(ns["transform"])
+    if cand_score > best_score and cand_score > 0:
+        pname = f"champ_{int(cand_score)}_{int(time.time())}.py"
+        open(os.path.join(pdir, pname), "w", encoding="utf-8").write(code)
+        all_p = sorted([f for f in os.listdir(pdir) if f.endswith(".py")])
+        for old_p in all_p[:-3]:
+            os.remove(os.path.join(pdir, old_p))
+        return f" | 🏆 Evo-Code: новый плагин-чемпион {pname} (балл={cand_score} > {best_score})"
+    return f" | 🛡️ Evo-Code: плагин проверен (балл={cand_score}, лидер={best_score})"
 
 def ask_github_ai(topic, intel):
     base = os.path.dirname(os.path.abspath(__file__))
@@ -32,18 +60,15 @@ def ask_github_ai(topic, intel):
             pass
 
     prompt = (
-        f"Тема: {topic}. Напиши: "
-        f"1) Краткий научный вывод (3 предложения). "
-        f"2) Быструю Python-функцию строго на стандартной библиотеке "
-        f"внутри блока ```python ... ``` с сигнатурой def transform(text: str) -> str: "
-        f"которая быстро выделяет ключевые термины и формирует компактную сводку."
+        f"Тема: {topic}. Напиши: 1) Краткий научный вывод (3 предложения). "
+        f"2) Быструю Python-функцию на стандартной библиотеке внутри ```python ... ``` с сигнатурой def transform(text: str) -> str:"
     )
 
     ans = ""
     src_name = ""
     endpoints = [
-        ("https://text.pollinations.ai/openai", "openai", "", "OpenAI-Free"),
-        ("https://models.inference.ai.://azure.com", "gpt-4o-mini", os.environ.get("GITHUB_TOKEN", "").strip(), "GitHub-AI")
+        ("https://models.inference.ai.://azure.com", "gpt-4o-mini", os.environ.get("GITHUB_TOKEN", "").strip(), "GitHub-AI"),
+        ("https://text.pollinations.ai/openai", "openai", "", "OpenAI-Free")
     ]
     for url, mdl, tok, label in endpoints:
         try:
@@ -51,7 +76,7 @@ def ask_github_ai(topic, intel):
             if tok:
                 hdrs["Authorization"] = f"Bearer {tok}"
             body = json.dumps({"model": mdl, "messages": [{"role": "user", "content": prompt}]}).encode()
-            res = json.loads(ur.urlopen(ur.Request(url, data=body, headers=hdrs), timeout=35).read().decode())
+            res = json.loads(ur.urlopen(ur.Request(url, data=body, headers=hdrs), timeout=25).read().decode())
             ans = next(iter(res.get("choices", ()))).get("message", {}).get("content", "").strip()
             if ans:
                 src_name = label
@@ -59,29 +84,27 @@ def ask_github_ai(topic, intel):
         except Exception:
             continue
 
-    if not ans:
-        return " | [AI-log: все шлюзы временно заняты]"
+    if ans:
+        enc = os.path.join(base, "master_encyclopedia.md")
+        with open(enc, "a", encoding="utf-8") as f:
+            f.write(f"\n### [{src_name} Глубокий разбор: {topic}]\n{ans}\n")
+        m = re.search(r"```python\s*(.*?)```", ans, re.S)
+        if m:
+            try:
+                code = m.group(1).strip()
+                compile(code, "<ai_candidate>", "exec")
+                ns = {}
+                exec(code, ns)
+                cand_score = _bench_plugin(ns["transform"])
+                if cand_score > best_score and cand_score > 0:
+                    pname = f"champ_{int(cand_score)}_{int(time.time())}.py"
+                    open(os.path.join(pdir, pname), "w", encoding="utf-8").write(code + "\n")
+                    all_p = sorted([f for f in os.listdir(pdir) if f.endswith(".py")])
+                    for old_p in all_p[:-3]:
+                        os.remove(os.path.join(pdir, old_p))
+                    return f" | 🏆 {src_name}: новый плагин {pname} (балл={cand_score})"
+            except Exception:
+                pass
+        return f" | 🧠 {src_name}: разбор записан (лидер={best_score})"
 
-    enc = os.path.join(base, "master_encyclopedia.md")
-    with open(enc, "a", encoding="utf-8") as f:
-        f.write(f"\n### [{src_name} Глубокий разбор: {topic}]\n{ans}\n")
-
-    m = re.search(r"```python\s*(.*?)```", ans, re.S)
-    if m:
-        try:
-            code = m.group(1).strip()
-            compile(code, "<ai_candidate>", "exec")
-            ns = {}
-            exec(code, ns)
-            cand_score = _bench_plugin(ns["transform"])
-            if cand_score > best_score and cand_score > 0:
-                pname = f"champ_{int(cand_score)}_{int(time.time())}.py"
-                open(os.path.join(pdir, pname), "w", encoding="utf-8").write(code + "\n")
-                all_p = sorted([f for f in os.listdir(pdir) if f.endswith(".py")])
-                for old_p in all_p[:-3]:
-                    os.remove(os.path.join(pdir, old_p))
-                return f" | 🏆 {src_name}: новый плагин {pname} (балл={cand_score})"
-            return f" | 🛡️ {src_name}: разбор записан, плагин отсеян (балл={cand_score})"
-        except Exception:
-            pass
-    return f" | 🧠 {src_name}: научный разбор записан в энциклопедию"
+    return _evolve_local_plugin(topic, intel, best_score, pdir)
