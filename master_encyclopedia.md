@@ -84,3 +84,6 @@ def transform(text: str) -> str:
 - [Wiki RU] Диаграмма Дынкина: Диаграмма Дынкина (или схема Дынкина) — определённый вид графов, в основном применяемый при классификация полупростых алгебр Ли. Названы по имени советского математика Евгения Дынкина, впервые применившего их в 1946 году
 - [Wiki EN] Hash table: In computer science, a hash table is a data structure that implements an associative array, also called a dictionary or simply map; an associative array is an abstract data type that maps keys to values. A hash table uses a hash function to compute an index, also called a hash code, into an array 
 
+## Gen #42 — Битбордовая генерация ходов (2026-11-27 06:29 UTC)
+- [Wiki EN] Bitboard: A bitboard is a specialized bit array data structure commonly used in computer systems that play board games, where each bit corresponds to a game board space or piece. The technique is applicable to any board game whose game state is represented by the presence of pieces on discrete spaces of a gam
+
