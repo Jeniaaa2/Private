@@ -23,7 +23,7 @@ try:
     except Exception:
         pass
     import chess_trainer
-    ch_res = chess_trainer.train_self_play(gen, xp)
+    ch_res = chess_trainer.train_self_play(gen)
     if ch_res:
         verdict_msg += ' | ' + str(ch_res)
 except Exception:
