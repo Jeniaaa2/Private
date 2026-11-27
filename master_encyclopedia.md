@@ -72,3 +72,7 @@ def transform(text: str) -> str:
 - [Wiki RU] Цикл (теория графов): В теории графов два типа объектов обычно называются циклами. Один тип циклов, чаще называющиеся замкнутым обходом, состоит из последовательности вершин, начинающейся и заканчивающейся в той же самой вершине, и каждые две последовательные вершины в последовательности смежны
 - [Wiki EN] Cycle (graph theory): In graph theory, a cycle in a graph is a non-empty trail in which only the first and last vertices are equal. A directed cycle in a directed graph is a non-empty directed trail in which only the first and last vertices are equal
 
+## Gen #39 — Квантовый поиск шахматных позиций (2026-11-27 02:37 UTC)
+- [Wiki RU] Искусственный интеллект: artificial intelligence; AI), также ИИ, искусственный ра́зум, в самом широком смысле — научно-технологическая область, занимающаяся изучением и созданием интеллектуальных сущностей (англ. intelligent entities), способных «вычислять, как им действовать эффективно и безопасно в самых ра
+- [Wiki EN] Solving chess: Solving chess consists of finding an optimal strategy for the game of chess; that is, one by which one of the players (White or Black) can always force either a victory or a draw (see solved game). It is also related to more generally solving chess-like games (i.e
+
