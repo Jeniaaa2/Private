@@ -558,7 +558,12 @@ try:
     _ld = _j.loads(open(_lp, encoding="utf-8").read())
     import cloud_agents as _ca
     _deb = _ca.run_agent_debate(_ld.get("history", [{}])[-1].get("topic", "Core"), _ld.get("xp", 1700), 1964)
-    _res = _ct.train_self_play(_ld.get("gen", 44))
+    if CHESS_ENABLED:
+        _res = _ct.train_self_play(_ld.get("gen", 44))
+    else:
+        import github_ai as _ga, knowledge_dedup as _kd
+        _kd.deduplicate()
+        _res = "⚡ Режим Ядро+Наука:" + _ga.evolve_numeric_plugin(_ld.get("history", [{}])[-1].get("topic", "Core"))
     if _ld.get("history"):
         _ld["history"][-1]["verdict"] += _rec_note + f" | {_deb}" + (f" | {_res}" if _res else "")
         open(_lp, "w", encoding="utf-8").write(_j.dumps(_ld, ensure_ascii=False, indent=2))
