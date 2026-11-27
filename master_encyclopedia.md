@@ -304,3 +304,7 @@ def transform(text: str) -> str:
 ## Gen #56 — Эндшпильные базы сжатия (2026-11-27 21:55 UTC)
 - [Wiki EN] Endgame tablebase: In chess, an endgame tablebase, or simply tablebase, is a computerised database containing precalculated evaluations of endgame positions. Tablebases are used by players and chess engines to analyze games and positions
 
+## Gen #57 — Квантование графов ходов (2026-11-27 22:56 UTC)
+- [Wiki RU] Открытые математические проблемы: Откры́тые (нерешённые) математи́ческие пробле́мы — задачи, которые рассматривались математиками, но до сих пор не решены. Часто имеют форму гипотез, которые предположительно верны, но нуждаются в доказательстве
+- [Wiki EN] Hierarchical navigable small world: Hierarchical navigable small world (HNSW) is an algorithm for approximate nearest neighbor search. It is used to find items that are similar to a query item in a large collection, without comparing the query with every item one by one
+
