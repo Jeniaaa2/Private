@@ -80,3 +80,7 @@ def transform(text: str) -> str:
 - [Wiki RU] Импульсная нейронная сеть: Импульсная нейронная сеть (ИмНС, англ. Pulsed neural networks, PNN) или Спайковая нейронная сеть (СНН, англ
 - [Wiki EN] Decision tree learning: Decision tree learning is a supervised learning approach used in statistics, data mining and machine learning. In this formalism, a classification or regression decision tree is used as a predictive model to draw conclusions about a set of observations
 
+## Gen #41 — Компактные таблицы транспозиций (2026-11-27 05:08 UTC)
+- [Wiki RU] Диаграмма Дынкина: Диаграмма Дынкина (или схема Дынкина) — определённый вид графов, в основном применяемый при классификация полупростых алгебр Ли. Названы по имени советского математика Евгения Дынкина, впервые применившего их в 1946 году
+- [Wiki EN] Hash table: In computer science, a hash table is a data structure that implements an associative array, also called a dictionary or simply map; an associative array is an abstract data type that maps keys to values. A hash table uses a hash function to compute an index, also called a hash code, into an array 
+
