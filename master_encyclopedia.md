@@ -117,3 +117,7 @@ def transform(text: str) -> str:
 
     return f"Ключевые термины: {', '.join(keywords)}. Сводка: {summary}"
 ```
+## Gen #43 — Сжатие нейросетевых оценок (2026-11-27 07:57 UTC)
+- [Wiki RU] Item response theory: Современная теория тестирования (англ. item response theory) — (иногда по-русски — Современная теория тестов, Теория ответов на задания, Теория моделирования и параметризации педагогических тестов) набор методов, позволяющий оценить вероятность правильного ответа испытуемых на задания ра
+- [Wiki EN] Random neural network: A random neural network (RNN) is a mathematical representation of an interconnected network of neurons or cells which exchange spiking signals. It was invented by Erol Gelenbe and is linked to the G-network model of queueing networks which Erol Gelenbe also invented, and with his Gene R
+
