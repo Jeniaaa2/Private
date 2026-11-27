@@ -561,8 +561,7 @@ try:
     if CHESS_ENABLED:
         _res = _ct.train_self_play(_ld.get("gen", 44))
     else:
-        import github_ai as _ga, knowledge_dedup as _kd
-        _kd.deduplicate()
+        import github_ai as _ga
         _res = "⚡ Режим Ядро+Наука:" + _ga.evolve_numeric_plugin(_ld.get("history", [{}])[-1].get("topic", "Core"))
     if _ld.get("history"):
         _ld["history"][-1]["verdict"] += _rec_note + f" | {_deb}" + (f" | {_res}" if _res else "")
