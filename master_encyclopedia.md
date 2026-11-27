@@ -164,3 +164,7 @@ def transform(text: str) -> str:
 - [Wiki RU] Хронология биотехнологии: Хроноло́гия биотехноло́гии — хронологический список общепризнанных в мировом научном сообществе знаковых открытий, которые привели к появлению и становлению биотехнологии в качестве современной науки и составляют основу для её дальнейшего развития. «<…> рассмотрение основных представ
 - [Wiki EN] Sea lamprey: The sea lamprey (Petromyzon marinus) is a parasitic lamprey native to the Northern Hemisphere. It is sometimes referred to as the "vampire fish"
 
+## Gen #46 — Разреженные таблицы транспозиций (2026-11-27 11:28 UTC)
+- [Wiki RU] Алгоритм Гаусса — Ньютона: Алгоритм Гаусса — Ньютона используется для решения задач нелинейным методом наименьших квадратов. Алгоритм является модификацией метода Ньютона для нахождения минимума функции
+- [Wiki EN] Sparse matrix: In numerical analysis and scientific computing, a sparse matrix or sparse array is a matrix in which most of the elements are zero. There is no strict definition regarding the proportion of zero-value elements for a matrix to qualify as sparse but a common criterion is that the number of non-ze
+
