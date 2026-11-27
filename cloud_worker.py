@@ -3,6 +3,13 @@ import urllib.request as ur, urllib.parse as up
 
 GH_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
 BRAIN_ZLIB = "compressed_brain.zlib"
+try:
+    import chess_trainer
+    ch_res = chess_trainer.train_self_play(gen, xp)
+    if ch_res:
+        verdict_msg += ' | ' + str(ch_res)
+except Exception:
+    pass
 EVO_LOG = "evolution_log.json"
 
 def get_rank(xp):
