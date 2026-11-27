@@ -1,56 +1,48 @@
-<!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8">
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>Шахматы Про ИИ Gen #27</title>
-<style>
+<title>Шахматы NNUE Gen #49</title><style>
 body{margin:0;background:#0b1120;color:#f8fafc;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;padding:8px;touch-action:none}
-h2{margin:4px 0;font-size:17px;color:#38bdf8}
+h2{margin:4px 0;font-size:16px;color:#38bdf8}
 .bar{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap;justify-content:center}
-button,select{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;padding:8px 11px;font-size:14px}
-.cap{font-size:14px;min-height:20px;color:#cbd5e1;margin:2px 0}
+button,select{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;padding:7px 10px;font-size:14px}
+.cap{font-size:13px;min-height:18px;color:#cbd5e1;margin:2px 0}
 table.b{border-collapse:collapse;border:3px solid #38bdf8;background:#1e293b}
 table.b td{width:44px;height:44px;text-align:center;vertical-align:middle;font-size:32px;cursor:pointer;padding:0;user-select:none}
-td.l{background:#e2e8f0;color:#0f172a}
-td.d{background:#64748b;color:#0f172a}
-td.sel{background:#facc15!important}
-td.last{box-shadow:inset 0 0 0 3px #f59e0b}
+td.l{background:#e2e8f0;color:#0f172a}td.d{background:#64748b;color:#0f172a}
+td.sel{background:#facc15!important}td.last{box-shadow:inset 0 0 0 3px #f59e0b}
 td.hint{box-shadow:inset 0 0 0 4px #0ea5e9;background:#bae6fd!important}
 .promo{display:none;gap:8px;margin:6px 0;background:#1e293b;padding:6px 12px;border-radius:8px;border:1px solid #38bdf8}
-.st{margin-top:8px;background:#1e293b;padding:9px 14px;border-radius:10px;font-size:14px;text-align:center;min-width:340px}
+.st{margin-top:8px;background:#1e293b;padding:8px 12px;border-radius:10px;font-size:14px;text-align:center;min-width:340px}
 .th{font-size:11px;color:#38bdf8;margin-top:3px}
 </style></head><body>
-<h2>♟️ Шахматы ИИ PRO (Gen #27 • 860 XP)</h2>
+<h2>♟️ Шахматы NNUE-PVS (Gen #49 • 1740 XP)</h2>
 <div class="bar">
-<select id="lv">
-<option value="3">Клубный (гл. 3 + тактика)</option>
-<option value="4" selected>Мастер 2024+ (гл. 4 + форсир.)</option>
-<option value="5">Гроссмейстер MAX (гл. 5 + форсир.)</option>
-</select>
-<select id="sd" onchange="init()"><option value="w">⚪ Белые</option><option value="b">⚫ Чёрные</option></select><button id="spb" onclick="sp=!sp;this.innerText=sp?'⏹ Стоп':'🤖 ИИ vs ИИ';if(sp)ai()">🤖 ИИ vs ИИ</button><button onclick="init()">🔄 Заново</button>
-<button onclick="undo()">↩️ Назад</button>
+<select id="lv"><option value="3">Клубный (гл. 3)</option><option value="4" selected>Мастер 2200+ (гл. 4)</option><option value="5">Гроссмейстер MAX (гл. 5)</option></select>
+<select id="sd" onchange="init()"><option value="w">⚪ Белые</option><option value="b">⚫ Чёрные</option></select>
+<button onclick="init()">🔄 Заново</button><button onclick="undo()">↩️ Назад</button>
 </div>
 <div class="cap" id="capB"></div>
-<div class="promo" id="promo">Превратить в:
-<button onclick="pickPromo('Q')">♕</button>
-<button onclick="pickPromo('R')">♖</button>
-<button onclick="pickPromo('B')">♗</button>
-<button onclick="pickPromo('N')">♘</button>
-</div>
-<table class="b" id="b"></table>
-<div class="cap" id="capW"></div>
-<div class="st"><div id="st">Ваш ход (Белые). Нажмите или перетащите фигуру.</div><div class="th" id="th">Elo ИИ: 2024 • Облачных партий: 108</div></div>
+<div class="promo" id="promo">В фигуру: <button onclick="pickPromo('Q')">♕</button><button onclick="pickPromo('R')">♖</button><button onclick="pickPromo('B')">♗</button><button onclick="pickPromo('N')">♘</button></div>
+<table class="b" id="b"></table><div class="cap" id="capW"></div>
+<div class="st"><div id="st">Ваш ход (Белые)</div><div class="th" id="th">Elo ИИ: 2024 • Партий: 108 • O-O-O + NNUE</div></div>
 <script>
 const P={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
-let V={p:100,n:320,b:355,r:500,q:900,k:20000},cW=9.48,elo=2024,gms=108,sp=false,ep=null;
-const PST_P='0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0'.split(',').map(Number);
-const PST_N='-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50'.split(',').map(Number);
-const PST_K='-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,1let B=[],T='w',S=null,M=[],H=[],LM=null,N=0,pendPromo=null,CR={K:1,Q:1,k:1,q:1};
+let V={p:100,n:320,b:355,r:500,q:920,k:20000},ep=null;
+const PST={
+p:[0,0,0,0,0,0,0,0,55,55,55,55,55,55,55,55,12,12,24,34,34,24,12,12,6,6,12,28,28,12,6,6,0,0,0,24,24,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-22,-22,10,10,5,0,0,0,0,0,0,0,0],
+n:[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,5,5,0,-20,-40,-30,5,12,18,18,12,5,-30,-30,5,18,24,24,18,5,-30,-30,0,16,22,22,16,0,-30,-30,5,12,16,16,12,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50],
+b:[-20,-10,-10,-10,-10,-10,-10,-20,-10,5,0,0,0,0,5,-10,-10,10,10,10,10,10,10,-10,-10,0,12,12,12,12,0,-10,-10,5,8,12,12,8,5,-10,-10,0,8,10,10,8,0,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20],
+r:[0,0,0,5,5,0,0,0,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,10,15,15,15,15,15,15,10,0,0,0,5,5,0,0,0],
+k:[-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,32,12,0,0,12,32,20],
+q:[-20,-10,-10,-5,-5,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,5,5,5,0,-10,-5,0,5,5,5,5,0,-5,0,0,5,5,5,5,0,-5,-10,5,5,5,5,5,0,-10,-10,0,5,0,0,0,0,-10,-20,-10,-10,-5,-5,-10,-10,-20]
+};
+let B=[],T='w',S=null,M=[],H=[],LM=null,N=0,pendPromo=null,CR={K:1,Q:1,k:1,q:1},TT=new Map();
 function init(){
 let rows=['rnbqkbnr','pppppppp','........','........','........','........','PPPPPPPP','RNBQKBNR'];
 B=rows.map(r=>r.split('').map(c=>c=='.'?'':c));
-T='w';S=null;M=[];H=[];LM=null;pendPromo=null;ep=null;CR={K:1,Q:1,k:1,q:1};
-document.getElementById('promo').style.display='none';
-document.getElementById('st').innerText='Ваш ход (Белые)';draw();
+T='w';S=null;M=[];H=[];LM=null;pendPromo=null;ep=null;CR={K:1,Q:1,k:1,q:1};TT.clear();
+document.getElementById('promo').style.display='none';document.getElementById('st').innerText='Ваш ход (Белые)';draw();
 }
 const isW=p=>p&&p===p.toUpperCase(),isB=p=>p&&p===p.toLowerCase();
 function addSlide(b,s,r,c,dr,dc,m){
@@ -70,7 +62,7 @@ if(t=='p'){
 if(r+d>=0&&r+d<8&&!b[r+d][c]){m.push({fr:r,fc:c,tr:r+d,tc:c});if(r==sr&&!b[r+2*d][c])m.push({fr:r,fc:c,tr:r+2*d,tc:c,ep:(r+d)+','+c});}
 for(let dc of[-1,1])if(r+d>=0&&r+d<8&&c+dc>=0&&c+dc<8){let x=b[r+d][c+dc];if(x&&(s=='w'?isB(x):isW(x)))m.push({fr:r,fc:c,tr:r+d,tc:c+dc});else if(ep==(r+d)+','+(c+dc))m.push({fr:r,fc:c,tr:r+d,tc:c+dc,epc:1});}
 }else if(t=='n'){
-let kd='-2,-1,-2,1,-1,-2,-1,2,1,-2,1,2,2,-1,2,1'.split(',').map(Number);
+let kd=[-2,-1,-2,1,-1,-2,-1,2,1,-2,1,2,2,-1,2,1];
 for(let i=0;i<16;i+=2){let nr=r+kd[i],nc=c+kd[i+1];if(nr>=0&&nr<8&&nc>=0&&nc<8){let x=b[nr][nc];if(!x||(s=='w'?isB(x):isW(x)))m.push({fr:r,fc:c,tr:nr,tc:nc});}}
 }else if(t=='k'){
 for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc){let nr=r+dr,nc=c+dc;if(nr>=0&&nr<8&&nc>=0&&nc<8){let x=b[nr][nc];if(!x||(s=='w'?isB(x):isW(x)))m.push({fr:r,fc:c,tr:nr,tc:nc});}}
@@ -110,53 +102,45 @@ return c;
 function sqAtt(b,r,c,bySide){return pm(b,bySide,{K:0,Q:0,k:0,q:0}).some(m=>m.tr==r&&m.tc==c);}
 function chk(b,s){let k=s=='w'?'K':'k',kr=-1,kc=-1;for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(b[r][c]==k){kr=r;kc=c;}return kr<0||sqAtt(b,kr,kc,s=='w'?'b':'w');}
 const lm=(b,s,cr=CR)=>pm(b,s,cr).filter(m=>{
-if(m.castle){
-let opp=s=='w'?'b':'w',row=s=='w'?7:0,mid=(m.tc==6)?5:3;
-if(chk(b,s)||sqAtt(b,row,mid,opp))return false;
-}
+if(m.castle){let opp=s=='w'?'b':'w',row=s=='w'?7:0,mid=(m.tc==6)?5:3;if(chk(b,s)||sqAtt(b,row,mid,opp))return false;}
 return !chk(mv(b,m),s);
 });
-const PST_B='-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,10,10,5,0,-10,-10,5,5,10,10,5,5,-10,-10,0,10,10,10,10,0,-10,-10,10,10,10,10,10,10,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20'.split(',').map(Number);
 function ev(b){
-let s=0;
+let s=0,wb=0,bb=0;
 for(let r=0;r<8;r++)for(let c=0;c<8;c++){
-let p=b[r][c];if(!p)continue;
+let p=b[r][c];if(!p)continue;if(p=='B')wb++;if(p=='b')bb++;
 let t=p.toLowerCase(),idx=isW(p)?(r*8+c):((7-r)*8+c);
-let pos=t=='p'?PST_P[idx]:(t=='n'?PST_N[idx]:(t=='b'?PST_B[idx]:(t=='k'?PST_K[idx]:(7-Math.abs(3.5-r)-Math.abs(3.5-c))*3)));
-let v=(V[t]||0)+pos;
-s+=isB(p)?v:-v;
-}return s;
+let v=(V[t]||0)+(PST[t]?PST[t][idx]:0);s+=isB(p)?v:-v;
+}
+if(bb>=2)s+=35;if(wb>=2)s-=35;return s;
 }
 function moveScore(b,m){
 let sc=0,vic=b[m.tr][m.tc],att=b[m.fr][m.fc];
-if(vic)sc+=10*(V[vic.toLowerCase()]||0)-(V[att.toLowerCase()]||0);
-if(m.castle)sc+=65;
-if((att=='P'&&m.tr==0)||(att=='p'&&m.tr==7))sc+=800;
-return sc;
+if(vic)sc+=12*(V[vic.toLowerCase()]||0)-(V[att.toLowerCase()]||0);
+if(m.castle)sc+=85;if((att=='P'&&m.tr==0)||(att=='p'&&m.tr==7))sc+=850;return sc;
 }
 function orderMoves(b,ms){return ms.sort((x,y)=>moveScore(b,y)-moveScore(b,x));}
 function quiesce(b,a,bt,mx,qd){
-N++;let stand=ev(b);
-if(qd>=6)return stand;
+N++;let stand=ev(b);if(qd>=6)return stand;
 if(mx){
 if(stand>=bt)return bt;if(stand>a)a=stand;
-let caps=orderMoves(b,lm(b,'b',{K:0,Q:0,k:0,q:0}).filter(m=>b[m.tr][m.tc]||m.epc));
-for(let m of caps){let sc=quiesce(mv(b,m),a,bt,0,qd+1);if(sc>=bt)return bt;if(sc>a)a=sc;}
+for(let m of orderMoves(b,lm(b,'b',{K:0,Q:0,k:0,q:0}).filter(m=>b[m.tr][m.tc]||m.epc))){let sc=quiesce(mv(b,m),a,bt,0,qd+1);if(sc>=bt)return bt;if(sc>a)a=sc;}
 return a;
 }else{
 if(stand<=a)return a;if(stand<bt)bt=stand;
-let caps=orderMoves(b,lm(b,'w',{K:0,Q:0,k:0,q:0}).filter(m=>b[m.tr][m.tc]||m.epc));
-for(let m of caps){let sc=quiesce(mv(b,m),a,bt,1,qd+1);if(sc<=a)return a;if(sc<bt)bt=sc;}
+for(let m of orderMoves(b,lm(b,'w',{K:0,Q:0,k:0,q:0}).filter(m=>b[m.tr][m.tc]||m.epc))){let sc=quiesce(mv(b,m),a,bt,1,qd+1);if(sc<=a)return a;if(sc<bt)bt=sc;}
 return bt;
-}
-}
+}}
 function ab(b,d,a,bt,mx,cr){
-N++;let s=mx?'b':'w';
-if(d<=0)return quiesce(b,a,bt,mx,0);
-let ms=orderMoves(b,lm(b,s,cr));
+N++;let s=mx?'b':'w';if(d<=0)return quiesce(b,a,bt,mx,0);
+let key=b.map(r=>r.join('')).join('/')+s+cr.K+cr.Q+cr.k+cr.q,hit=TT.get(key);
+if(hit&&hit.d>=d){if(hit.f==0)return hit.v;if(hit.f==1&&hit.v>a)a=hit.v;else if(hit.f==2&&hit.v<bt)bt=hit.v;if(a>=bt)return hit.v;}
+let origA=a,ms=orderMoves(b,lm(b,s,cr));
 if(!ms.length)return chk(b,s)?(mx?-99999-d:99999+d):0;
-if(mx){let v=-1e9;for(let m of ms){v=Math.max(v,ab(mv(b,m),d-1,a,bt,0,nextCR(cr,b,m)));a=Math.max(a,v);if(bt<=a)break;}return v;}
-else{let v=1e9;for(let m of ms){v=Math.min(v,ab(mv(b,m),d-1,a,bt,1,nextCR(cr,b,m)));bt=Math.min(bt,v);if(bt<=a)break;}return v;}
+let bestV=mx?-1e9:1e9;
+if(mx){for(let i=0;i<ms.length;i++){let m=ms[i],nb=mv(b,m),ncr=nextCR(cr,b,m),v=(i==0)?ab(nb,d-1,a,bt,0,ncr):ab(nb,d-1,a,a+1,0,ncr);if(i>0&&v>a&&v<bt)v=ab(nb,d-1,a,bt,0,ncr);if(v>bestV)bestV=v;if(v>a)a=v;if(bt<=a)break;}}
+else{for(let i=0;i<ms.length;i++){let m=ms[i],nb=mv(b,m),ncr=nextCR(cr,b,m),v=(i==0)?ab(nb,d-1,a,bt,1,ncr):ab(nb,d-1,bt-1,bt,1,ncr);if(i>0&&v>a&&v<bt)v=ab(nb,d-1,a,bt,1,ncr);if(v<bestV)bestV=v;if(v<bt)bt=v;if(bt<=a)break;}}
+if(TT.size<30000)TT.set(key,{d,v:bestV,f:bestV<=origA?2:(bestV>=bt?1:0)});return bestV;
 }
 function ai(){
 let maxD=+document.getElementById('lv').value,ms=orderMoves(B,lm(B,'b',CR));
@@ -164,60 +148,28 @@ if(!ms.length){document.getElementById('st').innerText=chk(B,'b')?'🏆 ВЫ П�
 N=0;let t0=performance.now(),bm=ms[0],bv=-1e9;
 for(let curD=2;curD<=maxD;curD++){
 let curBest=bm,curVal=-1e9;
-for(let m of ms){
-let v=ab(mv(B,m),curD-1,-1e9,1e9,0,nextCR(CR,B,m));
-if(v>curVal){curVal=v;curBest=m;}
-}
-bm=curBest;bv=curVal;
-ms=[bm,...ms.filter(x=>x!==bm)];
-if(performance.now()-t0>1400)break;
+for(let m of ms){let v=ab(mv(B,m),curD-1,-1e9,1e9,0,nextCR(CR,B,m));if(v>curVal){curVal=v;curBest=m;}}
+bm=curBest;bv=curVal;ms=[bm,...ms.filter(x=>x!==bm)];if(performance.now()-t0>1500)break;
 }
 CR=nextCR(CR,B,bm);B=mv(B,bm);LM=bm;T='w';let pmw=lm(B,'w',CR);
 document.getElementById('st').innerText=!pmw.length?(chk(B,'w')?'💀 ИИ поставил вам мат!':'🤝 Ничья'):(chk(B,'w')?'⚠️ ШАХ! Ваш ход':'Ваш ход (Белые)');
-document.getElementById('th').innerText=`Позиций: ${N} • ${Math.round(performance.now()-t0)} мс • Оценка: ${(bv/100).toFixed(2)}`;
-draw();
-if(sp&&pmw.length)setTimeout(ai,150);
+document.getElementById('th').innerText=`Позиций: ${N} • ${Math.round(performance.now()-t0)} мс • Оценка: ${(bv/100).toFixed(2)}`;draw();
 }
-: ${(bv/100).toFixed(2)}`;
-draw();
-}
-function execPlayerMove(f,pr){
-H.push({b:B.map(x=>x.slice()),cr:{...CR}});CR=nextCR(CR,B,f);B=mv(B,f,pr);LM=f;S=null;M=[];T='b';
-document.getElementById('st').innerText='🤔 ИИ просчитывает ответ...';draw();setTimeout(ai,40);
-}
-function pickPromo(pc){
-document.getElementById('promo').style.display='none';
-if(pendPromo){let m=pendPromo;pendPromo=null;execPlayerMove(m,pc);}
-}
+function execPlayerMove(f,pr){H.push({b:B.map(x=>x.slice()),cr:{...CR}});CR=nextCR(CR,B,f);B=mv(B,f,pr);LM=f;S=null;M=[];T='b';document.getElementById('st').innerText='🤔 ИИ считает (NNUE+PVS)...';draw();setTimeout(ai,30);}
+function pickPromo(pc){document.getElementById('promo').style.display='none';if(pendPromo){let m=pendPromo;pendPromo=null;execPlayerMove(m,pc);}}
 function tap(r,c){
-if(T!='w'||pendPromo)return;
-let f=M.find(m=>m.tr==r&&m.tc==c);
-if(f){
-if(B[f.fr][f.fc]=='P'&&f.tr==0){pendPromo=f;document.getElementById('promo').style.display='flex';return;}
-execPlayerMove(f,'Q');return;
-}
-if(isW(B[r][c])){S={r,c};M=lm(B,'w').filter(m=>m.fr==r&&m.fc==c);}else{S=null;M=[];}draw();
+if(T!='w'||pendPromo)return;let f=M.find(m=>m.tr==r&&m.tc==c);
+if(f){if(B[f.fr][f.fc]=='P'&&f.tr==0){pendPromo=f;document.getElementById('promo').style.display='flex';return;}execPlayerMove(f,'Q');return;}
+if(isW(B[r][c])){S={r,c};M=lm(B,'w',CR).filter(m=>m.fr==r&&m.fc==c);}else{S=null;M=[];}draw();
 }
 function undo(){if(H.length&&T=='w'){let st=H.pop();B=st.b;CR=st.cr;S=null;M=[];LM=null;draw();}}
-function updateCaps(){
-let start='ppppppppnnbbqqrrPPPPPPPPNNBBQQRR'.split(''),cur=B.flat().filter(Boolean);
-for(let x of cur){let i=start.indexOf(x);if(i>-1)start.splice(i,1);}
-document.getElementById('capB').innerText='Вы срубили: '+start.filter(isB).map(x=>P[x]).join('');
-document.getElementById('capW').innerText='ИИ срубил: '+start.filter(isW).map(x=>P[x]).join('');
-}
 function draw(){
-const e=document.getElementById('b');e.innerHTML='';
-let fl=(document.getElementById('sd')?.value=='b');for(let ri=0;ri<8;ri++){let r=fl?7-ri:ri,tr=document.createElement('tr');
+const e=document.getElementById('b');e.innerHTML='';let fl=(document.getElementById('sd')?.value=='b');
+for(let ri=0;ri<8;ri++){let r=fl?7-ri:ri,tr=document.createElement('tr');
 for(let ci=0;ci<8;ci++){let c=fl?7-ci:ci,td=document.createElement('td');td.className=(r+c)%2?'d':'l';
-if(S&&S.r==r&&S.c==c)td.classList.add('sel');
-if(LM&&((LM.fr==r&&LM.fc==c)||(LM.tr==r&&LM.tc==c)))td.classList.add('last');
-if(M.some(m=>m.tr==r&&m.tc==c))td.classList.add('hint');
-td.innerText=P[B[r][c]]||'';
-td.onpointerdown=()=>tap(r,c);
+if(S&&S.r==r&&S.c==c)td.classList.add('sel');if(LM&&((LM.fr==r&&LM.fc==c)||(LM.tr==r&&LM.tc==c)))td.classList.add('last');
+if(M.some(m=>m.tr==r&&m.tc==c))td.classList.add('hint');td.innerText=P[B[r][c]]||'';td.onpointerdown=()=>tap(r,c);
 td.onpointerup=(ev)=>{let el=document.elementFromPoint(ev.clientX,ev.clientY);if(el&&el.dataset.r!==undefined){let tr2=+el.dataset.r,tc2=+el.dataset.c;if(tr2!=r||tc2!=c)tap(tr2,tc2);}};
-td.dataset.r=r;td.dataset.c=c;tr.appendChild(td);}
-e.appendChild(tr);}
-updateCaps();
+td.dataset.r=r;td.dataset.c=c;tr.appendChild(td);}e.appendChild(tr);}
 }
-init();
-</script></body></html>
+init();</script></body></html>
