@@ -555,9 +555,11 @@ try:
 
     _lp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "evolution_log.json")
     _ld = _j.loads(open(_lp, encoding="utf-8").read())
+    import cloud_agents as _ca
+    _deb = _ca.run_agent_debate(_ld.get("history", [{}])[-1].get("topic", "Core"), _ld.get("xp", 1700), 1964)
     _res = _ct.train_self_play(_ld.get("gen", 44))
     if _ld.get("history"):
-        _ld["history"][-1]["verdict"] += _rec_note + (f" | {_res}" if _res else "")
+        _ld["history"][-1]["verdict"] += _rec_note + f" | {_deb}" + (f" | {_res}" if _res else "")
         open(_lp, "w", encoding="utf-8").write(_j.dumps(_ld, ensure_ascii=False, indent=2))
 except Exception:
     pass
