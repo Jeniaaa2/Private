@@ -1,3 +1,8 @@
+import json as _j
+def _arbiter_mult():
+    try: return float(_j.loads(open('agent_policy.json', encoding='utf-8').read()).get('last_mult', 1.0))
+    except Exception: return 1.0
+
 import os, re, time, json, random, urllib.request as ur
 
 def _bench_plugin(fn_obj):
