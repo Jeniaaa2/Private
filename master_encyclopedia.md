@@ -422,3 +422,6 @@ def transform(text: str) -> str:
 ### [arXiv Внешний поиск: Поиск на графах состояний]
 - Semantic-aware Wasserstein Policy Regularization for Large Language Model Alignment (Large language models (LLMs) are commonly aligned with human preferences using reinforcement learning from human feedback (RLHF). In this method, LLM policies are generally optimized through reward ma...)
 - The vanishing ideal of a finite set of points with multiplicity structures (Given a finite set of arbitrarily distributed points in affine space with arbitrary multiplicity structures, we present an algorithm to compute the reduced Groebner basis of the vanishing ideal under ...)
+## Gen #71 — Битбордная фильтрация ходов (2026-11-28 13:37 UTC)
+- [Wiki EN] Move generation: Move generation is the computational process by which a program identifies the legal moves available from a given game state in computer chess and generally other strategy games. In general game playing, the engine must produce only valid moves before evaluation can begin
+
