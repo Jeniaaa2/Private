@@ -323,3 +323,7 @@ def transform(text: str) -> str:
 ## Gen #62 — Поиск шахматных транспозиций через графовые сигнатуры (2026-11-28 04:57 UTC)
 - [Wiki EN] Mnemonic: A mnemonic device ( nə-MON-ik), memory trick or memory device is any learning technique that aids information retention or retrieval in the human memory, often by associating the information with something that is easier to remember. It makes use of elaborative encoding, retrieval cues and imagery a
 
+## Gen #63 — Минимизация графа поиска (2026-11-28 05:57 UTC)
+- [Wiki RU] Минимизация изломов: При визуализации графов, когда рёбра графа представляются ломаными (последовательностью отрезков, соединённых в точках излома), желательно минимизировать число изломов на ребро (что иногда называется сложностью кривой) или общее число изломов на рисунке. Минимизация изломов — это алгоритм
+- [Wiki EN] Transitive reduction: In the mathematical field of graph theory, a transitive reduction of a directed graph D is another directed graph with the same vertices and as few edges as possible, such that for all pairs v, w of vertices, a (directed) path from v to w in D exists if and only if such a path exists in 
+

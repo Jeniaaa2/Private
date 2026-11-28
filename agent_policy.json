@@ -1,7 +1,7 @@
 {
   "wins": {
     "BITWISE_BOOST": 5,
-    "VECTOR_EXPAND": 7,
+    "VECTOR_EXPAND": 8,
     "STRICT_GATE": 1
   },
   "last_mode": "VECTOR_EXPAND",
