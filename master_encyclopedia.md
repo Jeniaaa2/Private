@@ -439,3 +439,7 @@ def transform(text: str) -> str:
 ### [arXiv Внешний поиск: Поиск Монте-Карло с отсечением]
 - Observation of the rare $B^0_s\toμ^+μ^-$ decay from the combined analysis of CMS and LHCb data (A joint measurement is presented of the branching fractions $B^0_s\toμ^+μ^-$ and $B^0\toμ^+μ^-$ in proton-proton collisions at the LHC by the CMS and LHCb experiments. The data samples were collected ...)
 - Deep Search for Joint Sources of Gravitational Waves and High-Energy Neutrinos with IceCube During the Third Observing Run of LIGO and Virgo (The discovery of joint sources of high-energy neutrinos and gravitational waves has been a primary target for the LIGO, Virgo, KAGRA, and IceCube observatories. The joint detection of high-energy neut...)
+
+### [arXiv Внешний поиск: Поиск Монте-Карло с битовыми досками]
+- Observation of the rare $B^0_s\toμ^+μ^-$ decay from the combined analysis of CMS and LHCb data (A joint measurement is presented of the branching fractions $B^0_s\toμ^+μ^-$ and $B^0\toμ^+μ^-$ in proton-proton collisions at the LHC by the CMS and LHCb experiments. The data samples were collected ...)
+- Deep Search for Joint Sources of Gravitational Waves and High-Energy Neutrinos with IceCube During the Third Observing Run of LIGO and Virgo (The discovery of joint sources of high-energy neutrinos and gravitational waves has been a primary target for the LIGO, Virgo, KAGRA, and IceCube observatories. The joint detection of high-energy neut...)
