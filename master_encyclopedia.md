@@ -327,3 +327,6 @@ def transform(text: str) -> str:
 - [Wiki RU] Минимизация изломов: При визуализации графов, когда рёбра графа представляются ломаными (последовательностью отрезков, соединённых в точках излома), желательно минимизировать число изломов на ребро (что иногда называется сложностью кривой) или общее число изломов на рисунке. Минимизация изломов — это алгоритм
 - [Wiki EN] Transitive reduction: In the mathematical field of graph theory, a transitive reduction of a directed graph D is another directed graph with the same vertices and as few edges as possible, such that for all pairs v, w of vertices, a (directed) path from v to w in D exists if and only if such a path exists in 
 
+## Gen #64 — Сжатие транспозиционных таблиц (2026-11-28 07:10 UTC)
+- [Wiki EN] Straddling checkerboard: A straddling checkerboard is a device for converting an alphanumeric plaintext into digits whilst simultaneously achieving fractionation (a simple form of information diffusion) and data compression relative to other schemes using digits. It also is known as a monôme-binôme cipher.
+
