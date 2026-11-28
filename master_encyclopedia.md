@@ -351,3 +351,7 @@ def transform(text: str) -> str:
 - [Wiki RU] NoSQL: not only SQL — не только SQL) — обозначение широкого класса разнородных систем управления базами данных (СУБД), появившихся в конце 2000-х — начале 2010-х годов и существенно отличающихся от традиционных реляционных СУБД с доступом к данным средствами языка SQL. Применяется к системам, в которых делает
 - [Wiki EN] Image segmentation: In digital image processing and computer vision, image segmentation is the process of partitioning a digital image into multiple image segments, also known as image regions or image objects (sets of pixels). The goal of segmentation is to simplify and/or change the representation of an ima
 
+## Gen #68 — Поиск Монте-Карло по дереву (2026-11-28 10:26 UTC)
+- [Wiki RU] Метод Монте-Карло: Методы Мо́нте-Ка́рло (ММК) — группа численных методов для изучения случайных процессов. Суть метода заключается в следующем: процесс описывается математической моделью с использованием генератора случайных величин, модель многократно обсчитывается, на основе полученных данных вычисляются ве
+- [Wiki EN] Monte Carlo tree search: In computer science, Monte Carlo tree search (MCTS) is a heuristic tree search algorithm for some kinds of decision processes, most notably those employed in software that plays board games. In that context MCTS is used to solve the game tree
+
