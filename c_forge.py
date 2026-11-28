@@ -46,6 +46,13 @@ uint64_t quantize_topk(uint64_t thresh, uint64_t n) {{
         res = lib.quantize_topk(thresh, iters)
         dt = max(time.perf_counter() - t0, 1e-6)
         ops = int((iters * 64) / dt)
+        try:
+            pf = os.path.join(BASE, "agent_policy.json")
+            pol = json.loads(open(pf, encoding="utf-8").read()) if os.path.exists(pf) else {}
+            pol["c_mask"] = hex(res)
+            pol["active_leaders"] = bin(res).count("1")
+            open(pf, "w", encoding="utf-8").write(json.dumps(pol, ensure_ascii=False, indent=2))
+        except Exception: pass
         return f" | ⚙️ C-Forge 1-bit Top-K (-O3): {ops:,} ops/s (mask={hex(res)[:10]})"
     except Exception as e:
         return f" | ⚙️ C-Forge резерв: {str(e)[:35]}"

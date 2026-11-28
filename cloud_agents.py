@@ -26,7 +26,8 @@ def run_agent_debate(topic, xp, elo):
 
     # Стратег выбирает тактику с учётом накопленных побед (взвешенный выбор)
     modes = list(wins.keys())
-    weights = [max(1, wins[m]) for m in modes]
+    boost = int(pol.get("active_leaders", 1))
+    weights = [max(1, wins[m] + (boost if m == pol.get("last_mode") else 0)) for m in modes]
     chosen = random.choices(modes, weights=weights, k=1)[0]
 
     proposals = {

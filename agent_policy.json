@@ -1,9 +1,11 @@
 {
   "wins": {
     "BITWISE_BOOST": 5,
-    "VECTOR_EXPAND": 12,
+    "VECTOR_EXPAND": 13,
     "STRICT_GATE": 2
   },
   "last_mode": "VECTOR_EXPAND",
-  "last_mult": 1.03
+  "last_mult": 1.03,
+  "c_mask": "0x3f",
+  "active_leaders": 6
 }
