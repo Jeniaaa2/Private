@@ -443,3 +443,10 @@ def transform(text: str) -> str:
 ### [arXiv Внешний поиск: Поиск Монте-Карло с битовыми досками]
 - Observation of the rare $B^0_s\toμ^+μ^-$ decay from the combined analysis of CMS and LHCb data (A joint measurement is presented of the branching fractions $B^0_s\toμ^+μ^-$ and $B^0\toμ^+μ^-$ in proton-proton collisions at the LHC by the CMS and LHCb experiments. The data samples were collected ...)
 - Deep Search for Joint Sources of Gravitational Waves and High-Energy Neutrinos with IceCube During the Third Observing Run of LIGO and Virgo (The discovery of joint sources of high-energy neutrinos and gravitational waves has been a primary target for the LIGO, Virgo, KAGRA, and IceCube observatories. The joint detection of high-energy neut...)
+## Gen #76 — Поиск Монте-Карло сжатых графов (2026-11-28 18:45 UTC)
+- [Wiki RU] Обход дерева: Обход дерева (известный также как поиск по дереву) — вид обхода графа, обусловливающий процесс посещения (проверки и/или обновления) каждого узла структуры дерева данных ровно один раз. Такие обходы классифицируются по порядку, в котором узлы посещаются
+
+
+### [arXiv Внешний поиск: Поиск Монте-Карло сжатых графов]
+- Sufficient conditions for convergence of multiple Fourier series with $J_k$-lacunary sequence of rectangular partial sums in terms of Weyl multipliers (We obtain sufficient conditions for convergence (almost everywhere) of multiple trigonometric Fourier series of functions $f$ in $L_2$ in terms of Weyl multipliers. We consider the case where rectangu...)
+- Uncovering the Timescales of Spin Reorientation in $TbMn_{6}Sn_{6}$ (Kagome ferrimagnets are of fundamental interest because of their tunable magnetic, electronic and topological properties, with potential applications for quantum-enabled technologies and spintronics. ...)
