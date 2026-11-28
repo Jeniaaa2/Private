@@ -425,3 +425,10 @@ def transform(text: str) -> str:
 ## Gen #71 — Битбордная фильтрация ходов (2026-11-28 13:37 UTC)
 - [Wiki EN] Move generation: Move generation is the computational process by which a program identifies the legal moves available from a given game state in computer chess and generally other strategy games. In general game playing, the engine must produce only valid moves before evaluation can begin
 
+## Gen #73 — Поиск Монте-Карло на графах (2026-11-28 15:44 UTC)
+- [Wiki RU] Граф Монте-Кристо: Le Comte de Monte-Cristo) — приключенческий роман Александра Дюма, написанный им в 1844—1846 годах, возможно, в соавторстве с Огюстом Маке. На его основе позже были написаны пьесы «Монте-Кристо», «Граф де Морсер» и «Вильфор»
+
+
+### [arXiv Внешний поиск: Поиск Монте-Карло на графах]
+- Semantic-aware Wasserstein Policy Regularization for Large Language Model Alignment (Large language models (LLMs) are commonly aligned with human preferences using reinforcement learning from human feedback (RLHF). In this method, LLM policies are generally optimized through reward ma...)
+- The vanishing ideal of a finite set of points with multiplicity structures (Given a finite set of arbitrarily distributed points in affine space with arbitrary multiplicity structures, we present an algorithm to compute the reduced Groebner basis of the vanishing ideal under ...)
