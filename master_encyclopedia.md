@@ -343,3 +343,7 @@ def transform(text: str) -> str:
     normalized = " ".join(text.split())
     return f"[компилятор C -O3 • квантовые алгоритмы • граф знаний] {normalized}"
 ```
+## Gen #66 — Вероятностные таблицы транспозиций (2026-11-28 08:29 UTC)
+- [Wiki RU] Расстояние Левенштейна: Расстояние Левенштейна — метрика на множестве конечных последовательностей, определяемая как минимальное число одноэлементных операций редактирования, необходимых для превращения одной последовательности в другую. В классическом случае разрешены три операции единичной стоимости: вставк
+- [Wiki EN] Decision table: In business process modeling, decision tables are tabular representations for specifying which actions to perform depending on given conditions. Similar concepts are known as control table or state-transition table in software engineering and other fields, where they are usually defined as the
+
