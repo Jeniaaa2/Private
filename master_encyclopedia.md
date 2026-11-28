@@ -432,3 +432,10 @@ def transform(text: str) -> str:
 ### [arXiv Внешний поиск: Поиск Монте-Карло на графах]
 - Semantic-aware Wasserstein Policy Regularization for Large Language Model Alignment (Large language models (LLMs) are commonly aligned with human preferences using reinforcement learning from human feedback (RLHF). In this method, LLM policies are generally optimized through reward ma...)
 - The vanishing ideal of a finite set of points with multiplicity structures (Given a finite set of arbitrarily distributed points in affine space with arbitrary multiplicity structures, we present an algorithm to compute the reduced Groebner basis of the vanishing ideal under ...)
+## Gen #74 — Поиск Монте-Карло с отсечением (2026-11-28 16:45 UTC)
+- [Wiki RU] AlphaGo: AlphaGo — программа для игры в го, разработанная компанией Google DeepMind в 2015 году. AlphaGo стала первой в мире программой, которая выиграла матч без гандикапа у профессионального игрока в го на стандартной доске 19 × 19, и эта победа ознаменовала собой важный прорыв в области искусственного инте
+
+
+### [arXiv Внешний поиск: Поиск Монте-Карло с отсечением]
+- Observation of the rare $B^0_s\toμ^+μ^-$ decay from the combined analysis of CMS and LHCb data (A joint measurement is presented of the branching fractions $B^0_s\toμ^+μ^-$ and $B^0\toμ^+μ^-$ in proton-proton collisions at the LHC by the CMS and LHCb experiments. The data samples were collected ...)
+- Deep Search for Joint Sources of Gravitational Waves and High-Energy Neutrinos with IceCube During the Third Observing Run of LIGO and Virgo (The discovery of joint sources of high-energy neutrinos and gravitational waves has been a primary target for the LIGO, Virgo, KAGRA, and IceCube observatories. The joint detection of high-energy neut...)
