@@ -311,3 +311,6 @@ def transform(text: str) -> str:
 ## Gen #58 — Миниакс с отсечением доминируемых ходов (2026-11-27 23:51 UTC)
 - [Wiki EN] Minimax: Minimax (sometimes Minmax, MM or saddle point) is a decision rule used in artificial intelligence, decision theory, combinatorial game theory, statistics, and philosophy for minimizing the possible loss for a worst case (maximum loss) scenario. When dealing with gains, it is referred to as "maximin" 
 
+## Gen #59 — Сжатие шахматных позиций (2026-11-28 01:06 UTC)
+- [Wiki RU] Вихрев, Виктор Викторович: 1946) — советский и российский учёный, доктор физико-математических наук, профессор, программист, автор программы «Кентавр», победителя I чемпионата шахматных программ СССР (Улан-Удэ, 1988 год).
+
