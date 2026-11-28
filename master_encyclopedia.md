@@ -317,3 +317,6 @@ def transform(text: str) -> str:
 ## Gen #60 — Блум-фильтры шахматных транспозиций (2026-11-28 02:32 UTC)
 - [Wiki EN] Hash function: A hash function is any function that can be used to map data of arbitrary size to fixed-size values, though there are some hash functions that support variable-length output. The values returned by a hash function are called hash values, hash codes, (hash/message) digests, or simply hashes
 
+## Gen #61 — Квантизация графовых нейросетей (2026-11-28 03:53 UTC)
+- [Wiki EN] Neural gas: Neural gas is an artificial neural network, inspired by the self-organizing map and introduced in 1991 by Thomas Martinetz and Klaus Schulten. The neural gas is a simple algorithm for finding optimal data representations based on feature vectors
+
