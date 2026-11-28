@@ -401,3 +401,16 @@ def transform(text: str) -> str:
 ### [arXiv Внешний поиск: Ring AllReduce distributed neural network]
 - A Tutorial about Random Neural Networks in Supervised Learning (Random Neural Networks (RNNs) are a class of Neural Networks (NNs) that can also be seen as a specific type of queuing network. They have been successfully used in several domains during the last 25 y...)
 - Predicting concentration levels of air pollutants by transfer learning and recurrent neural network (Air pollution (AP) poses a great threat to human health, and people are paying more attention than ever to its prediction. Accurate prediction of AP helps people to plan for their outdoor activities a...)
+
+### [OpenAI-Free Глубокий разбор: Синтез статей arXiv по Ring-AllReduce и 1-битного C-ядра]
+### Краткий научный вывод
+
+Ring-AllReduce снижает коммуникационные накладные расходы при распределённом обучении, разбивая коллективную операцию на обмены между соседними узлами, но его эффективность зависит от размера данных и пропускной способности сети. 1-битное C-ядро может уменьшить объём передаваемых градиентов за счёт их квантования, однако экономия сопровождается ошибкой аппроксимации и требует оценки влияния на сходимость. Совместное применение этих подходов потенциально сокращает время обмена, но выигрыш определяется балансом между стоимостью квантования, сетевой топологией и точностью обучения.
+
+### Функция
+
+```python
+def transform(text: str) -> str:
+    """Сжимает пробелы в тексте, сохраняя содержимое."""
+    return " ".join(text.split())
+```
