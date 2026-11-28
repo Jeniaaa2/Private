@@ -16,12 +16,12 @@ def forge_and_bench(gen_num=69):
 
     arr_str = ", ".join(str(x) for x in scores[:64])
     thresh = int(sum(scores[:64]) / 64)
-    iters = 20000000
+    iters = 20000001
 
     c_src = f"""#include <stdint.h>
 uint64_t quantize_topk(uint64_t thresh, uint64_t n) {{
     uint64_t w[64] = {{{arr_str}}};
-    uint64_t acc = 0;
+    volatile uint64_t acc = 0;
     for (uint64_t k = 0; k < n; k++) {{
         uint64_t mask = 0;
         uint64_t t = thresh + (k & 3);
