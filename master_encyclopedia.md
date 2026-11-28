@@ -393,3 +393,7 @@ def transform(text: str) -> str:
     text = unicodedata.normalize("NFKC", text)
     return re.sub(r"\s+", " ", text).strip()
 ```
+## Gen #69 — Спектральный поиск по графам (2026-11-28 11:22 UTC)
+- [Wiki RU] Спектральная кластеризация: Техники спектральной кластеризации используют спектр (собственные значения) матрицы сходства данных для осуществления снижения размерности перед кластеризацией в пространствах меньших размерностей. Матрица сходства подаётся в качестве входа и состоит из количественных оценок относи
+- [Wiki EN] Graph partition: In mathematics, a graph partition is the reduction of a graph to a smaller graph by partitioning its set of nodes into mutually exclusive groups. Edges of the original graph that cross between the groups will produce edges in the partitioned graph
+
