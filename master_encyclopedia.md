@@ -320,3 +320,6 @@ def transform(text: str) -> str:
 ## Gen #61 — Квантизация графовых нейросетей (2026-11-28 03:53 UTC)
 - [Wiki EN] Neural gas: Neural gas is an artificial neural network, inspired by the self-organizing map and introduced in 1991 by Thomas Martinetz and Klaus Schulten. The neural gas is a simple algorithm for finding optimal data representations based on feature vectors
 
+## Gen #62 — Поиск шахматных транспозиций через графовые сигнатуры (2026-11-28 04:57 UTC)
+- [Wiki EN] Mnemonic: A mnemonic device ( nə-MON-ik), memory trick or memory device is any learning technique that aids information retention or retrieval in the human memory, often by associating the information with something that is easier to remember. It makes use of elaborative encoding, retrieval cues and imagery a
+
