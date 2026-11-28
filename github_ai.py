@@ -3,7 +3,8 @@ import time as _t
 def _kg_hint():
     try:
         kg = _j.loads(open("knowledge_graph.json").read())
-        return " | Граф: " + "; ".join([k for k, v in kg.get("strong_links", [])[:5]])
+        import intrinsic_drive as _id
+        return " | " + _id.reflect_and_desire().strip(" | ") + " | Граф: " + "; ".join([k for k, v in kg.get("strong_links", [])[:5]])
     except Exception:
         return ""
 import json as _j
