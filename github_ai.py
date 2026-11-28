@@ -1,3 +1,11 @@
+
+import time as _t
+def _kg_hint():
+    try:
+        kg = _j.loads(open("knowledge_graph.json").read())
+        return " | Граф: " + "; ".join([k for k, v in kg.get("strong_links", [])[:5]])
+    except Exception:
+        return ""
 import json as _j
 def _arbiter_mult():
     try: return float(_j.loads(open('agent_policy.json', encoding='utf-8').read()).get('last_mult', 1.0))
