@@ -414,3 +414,11 @@ def transform(text: str) -> str:
     """Сжимает пробелы в тексте, сохраняя содержимое."""
     return " ".join(text.split())
 ```
+## Gen #70 — Поиск на графах состояний (2026-11-28 12:19 UTC)
+- [Wiki RU] Поиск в пространстве состояний: По́иск в простра́нстве состоя́ний (англ. state space search) — группа математических методов, предназначенных для решения задач искусственного интеллекта
+- [Wiki EN] Facebook Graph Search: Facebook Graph Search was a semantic search engine that Facebook introduced in March 2013. It was designed to give answers to user natural language queries rather than a list of links
+
+
+### [arXiv Внешний поиск: Поиск на графах состояний]
+- Semantic-aware Wasserstein Policy Regularization for Large Language Model Alignment (Large language models (LLMs) are commonly aligned with human preferences using reinforcement learning from human feedback (RLHF). In this method, LLM policies are generally optimized through reward ma...)
+- The vanishing ideal of a finite set of points with multiplicity structures (Given a finite set of arbitrarily distributed points in affine space with arbitrary multiplicity structures, we present an algorithm to compute the reduced Groebner basis of the vanishing ideal under ...)
