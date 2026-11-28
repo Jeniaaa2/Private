@@ -450,3 +450,7 @@ def transform(text: str) -> str:
 ### [arXiv Внешний поиск: Поиск Монте-Карло сжатых графов]
 - Sufficient conditions for convergence of multiple Fourier series with $J_k$-lacunary sequence of rectangular partial sums in terms of Weyl multipliers (We obtain sufficient conditions for convergence (almost everywhere) of multiple trigonometric Fourier series of functions $f$ in $L_2$ in terms of Weyl multipliers. We consider the case where rectangu...)
 - Uncovering the Timescales of Spin Reorientation in $TbMn_{6}Sn_{6}$ (Kagome ferrimagnets are of fundamental interest because of their tunable magnetic, electronic and topological properties, with potential applications for quantum-enabled technologies and spintronics. ...)
+
+### [arXiv Внешний поиск: Поиск по графу Монте-Карло]
+- Compositional 3D Scene Generation using Locally Conditioned Diffusion (Designing complex 3D scenes has been a tedious, manual process requiring domain expertise. Emerging text-to-3D generative models show great promise for making this task more intuitive, but existing ap...)
+- Necessary and Sufficient Conditions for Simultaneous State and Input Recovery of Linear Systems with Sparse Inputs by $\ell_1$-Minimization (The study of theoretical conditions for recovering sparse signals from compressive measurements has received a lot of attention in the research community. In parallel, there has been a great amount of...)
