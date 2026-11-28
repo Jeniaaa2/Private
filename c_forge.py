@@ -1,30 +1,52 @@
-import os, time, ctypes, random, subprocess, tempfile
+import os, time, json, ctypes, random, subprocess, tempfile
 
-def forge_and_bench(gen_num=56):
-    s1, s2 = random.choice((13, 17, 21)), random.choice((7, 11, 15))
-    m1 = random.choice(["0x9e3779b97f4a7c15ULL", "0xbf58476d1ce4e5b9ULL", "0x94d049bb133111ebULL"])
-    iters = 50000000
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+def forge_and_bench(gen_num=69):
+    # Берём реальные веса связей из графа знаний для 1-битной квантизации
+    scores = [71, 65, 55, 40, 25, 15, 10, 5] * 8
+    gp = os.path.join(BASE, "knowledge_graph.json")
+    if os.path.exists(gp):
+        try:
+            vals = [int(v) for _, v in json.loads(open(gp, encoding="utf-8").read()).get("strong_links", [])]
+            if vals:
+                scores = (vals * (64 // len(vals) + 1))[:64]
+        except Exception:
+            pass
+
+    arr_str = ", ".join(str(x) for x in scores[:64])
+    thresh = int(sum(scores[:64]) / 64)
+    iters = 20000000
+
     c_src = f"""#include <stdint.h>
-uint64_t fast_kernel(uint64_t seed, uint64_t n) {{
-    uint64_t x = seed;
-    for (uint64_t i = 0; i < n; i++) {{ x ^= (x << {s1}) + i; x *= {m1}; x ^= (x >> {s2}); }}
-    return x;
+uint64_t quantize_topk(uint64_t thresh, uint64_t n) {{
+    uint64_t w[64] = {{{arr_str}}};
+    uint64_t acc = 0;
+    for (uint64_t k = 0; k < n; k++) {{
+        uint64_t mask = 0;
+        uint64_t t = thresh + (k & 3);
+        for (int i = 0; i < 64; i++) {{
+            if (w[i] >= t) mask |= (1ULL << i);
+        }}
+        acc ^= mask + __builtin_popcountll(mask);
+    }}
+    return acc;
 }}"""
-    so_path = os.path.join(tempfile.gettempdir(), f"c_kernel_g{gen_num}.so")
+    so_path = os.path.join(tempfile.gettempdir(), f"c_qtopk_g{gen_num}.so")
     c_path = so_path + ".c"
     try:
         open(c_path, "w").write(c_src)
         comp = subprocess.run(["gcc", "-O3", "-shared", "-fPIC", c_path, "-o", so_path], capture_output=True, text=True)
         if comp.returncode != 0:
-            return " | ⚙️ C-Forge: gcc нет, активен Python-SIMD"
+            return " | ⚙️ C-Forge 1-bit: gcc нет, активен Python-SIMD"
         lib = ctypes.CDLL(so_path)
-        lib.fast_kernel.argtypes = [ctypes.c_uint64, ctypes.c_uint64]
-        lib.fast_kernel.restype = ctypes.c_uint64
+        lib.quantize_topk.argtypes = [ctypes.c_uint64, ctypes.c_uint64]
+        lib.quantize_topk.restype = ctypes.c_uint64
         t0 = time.perf_counter()
-        res = lib.fast_kernel(0x123456789ABCDEF0, iters)
+        res = lib.quantize_topk(thresh, iters)
         dt = max(time.perf_counter() - t0, 1e-6)
-        ops = int((iters * 4) / dt)
-        return f" | ⚙️ C-Forge (-O3): {ops:,} ops/s (h={hex(res)[:10]})"
+        ops = int((iters * 64) / dt)
+        return f" | ⚙️ C-Forge 1-bit Top-K (-O3): {ops:,} ops/s (mask={hex(res)[:10]})"
     except Exception as e:
         return f" | ⚙️ C-Forge резерв: {str(e)[:35]}"
     finally:
