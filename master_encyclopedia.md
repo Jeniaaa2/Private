@@ -330,3 +330,6 @@ def transform(text: str) -> str:
 ## Gen #64 — Сжатие транспозиционных таблиц (2026-11-28 07:10 UTC)
 - [Wiki EN] Straddling checkerboard: A straddling checkerboard is a device for converting an alphanumeric plaintext into digits whilst simultaneously achieving fractionation (a simple form of information diffusion) and data compression relative to other schemes using digits. It also is known as a monôme-binôme cipher.
 
+## Gen #65 — Поиск циклов в графе (2026-11-28 10:39 UTC)
+- [Wiki RU] Эйлеров цикл: Эйлеров путь (эйлерова цепь) в графе — это путь, проходящий по всем рёбрам графа и притом только по одному разу. Гамильтонов путь) Эйлеров цикл — эйлеров путь, являющийся циклом, то есть замкнутый путь, проходящий через каждое ребро графа ровно по одному разу
+
