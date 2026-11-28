@@ -314,3 +314,6 @@ def transform(text: str) -> str:
 ## Gen #59 — Сжатие шахматных позиций (2026-11-28 01:06 UTC)
 - [Wiki RU] Вихрев, Виктор Викторович: 1946) — советский и российский учёный, доктор физико-математических наук, профессор, программист, автор программы «Кентавр», победителя I чемпионата шахматных программ СССР (Улан-Удэ, 1988 год).
 
+## Gen #60 — Блум-фильтры шахматных транспозиций (2026-11-28 02:32 UTC)
+- [Wiki EN] Hash function: A hash function is any function that can be used to map data of arbitrary size to fixed-size values, though there are some hash functions that support variable-length output. The values returned by a hash function are called hash values, hash codes, (hash/message) digests, or simply hashes
+
