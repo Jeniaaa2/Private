@@ -347,3 +347,7 @@ def transform(text: str) -> str:
 - [Wiki RU] Расстояние Левенштейна: Расстояние Левенштейна — метрика на множестве конечных последовательностей, определяемая как минимальное число одноэлементных операций редактирования, необходимых для превращения одной последовательности в другую. В классическом случае разрешены три операции единичной стоимости: вставк
 - [Wiki EN] Decision table: In business process modeling, decision tables are tabular representations for specifying which actions to perform depending on given conditions. Similar concepts are known as control table or state-transition table in software engineering and other fields, where they are usually defined as the
 
+## Gen #67 — Графовое сжатие вариантов (2026-11-28 09:26 UTC)
+- [Wiki RU] NoSQL: not only SQL — не только SQL) — обозначение широкого класса разнородных систем управления базами данных (СУБД), появившихся в конце 2000-х — начале 2010-х годов и существенно отличающихся от традиционных реляционных СУБД с доступом к данным средствами языка SQL. Применяется к системам, в которых делает
+- [Wiki EN] Image segmentation: In digital image processing and computer vision, image segmentation is the process of partitioning a digital image into multiple image segments, also known as image regions or image objects (sets of pixels). The goal of segmentation is to simplify and/or change the representation of an ima
+
